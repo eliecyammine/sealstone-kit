@@ -30,6 +30,13 @@
     "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.swiftdeps",
     "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.dia"
   },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/SealstoneID.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/SealstoneID.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/SealstoneID.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/SealstoneID~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/SealstoneID.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/SealstoneID.dia"
+  },
   "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Timestamp.swift": {
     "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.d",
     "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.swift.o",
@@ -50,5 +57,12 @@
     "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError~partial.swiftmodule",
     "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.swiftdeps",
     "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultValidator.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultValidator.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultValidator.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultValidator~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultValidator.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultValidator.dia"
   }
 }
