@@ -199,3 +199,31 @@ public actor VaultStore {
         return document
     }
 }
+
+extension VaultStore.Failure: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .noVaultAtLocation:
+            "There's no vault file on this device. If you have a backup, you can "
+            + "open it and start again from there."
+
+        case .vaultAlreadyExists:
+            "There's already a vault on this device. Opening it is the way in; "
+            + "creating another would leave the first one unreachable."
+
+        case .writeFailed(let detail):
+            "The vault couldn't be saved: \(detail). Your previous version is "
+            + "still intact, so nothing was lost. Check you have free space and "
+            + "try again."
+
+        case .backupUnreadable(let detail):
+            "That backup file couldn't be read: \(detail). Check the file is "
+            + "still where you left it and hasn't been renamed to something else."
+
+        case .backupExclusionFailed(let detail):
+            "The vault was saved, but couldn't be marked as excluded from iCloud "
+            + "Backup: \(detail). Turn off iCloud Backup for Sealstone in "
+            + "Settings, or restart and try again."
+        }
+    }
+}
