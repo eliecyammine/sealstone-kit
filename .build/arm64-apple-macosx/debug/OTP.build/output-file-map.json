@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/primary.swiftdeps"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/OTP/OneTimePassword.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.dia"
+  }
+}

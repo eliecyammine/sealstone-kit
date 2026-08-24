@@ -1,0 +1,3 @@
+module VaultCrypto {
+    header "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/include/VaultCrypto-Swift.h"
+}

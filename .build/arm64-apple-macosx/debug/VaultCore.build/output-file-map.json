@@ -1,0 +1,54 @@
+{
+  "": {
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/primary.swiftdeps"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Base32.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Item+Coding.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Item.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/JSONValue.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Timestamp.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultDocument.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultError.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.dia"
+  }
+}

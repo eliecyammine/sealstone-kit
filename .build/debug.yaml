@@ -1,0 +1,91 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "OTP-arm64-apple-macosx-debug.module": ["<OTP-arm64-apple-macosx-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "VaultCore-arm64-apple-macosx-debug.module": ["<VaultCore-arm64-apple-macosx-debug.module>"]
+  "VaultCrypto-arm64-apple-macosx-debug.module": ["<VaultCrypto-arm64-apple-macosx-debug.module>"]
+  "main": ["<OTP-arm64-apple-macosx-debug.module>","<VaultCore-arm64-apple-macosx-debug.module>","<VaultCrypto-arm64-apple-macosx-debug.module>"]
+  "test": ["<OTP-arm64-apple-macosx-debug.module>","<VaultCore-arm64-apple-macosx-debug.module>","<VaultCrypto-arm64-apple-macosx-debug.module>"]
+default: "main"
+nodes:
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/OTP/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/OTP/OneTimePassword.swift"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources"]
+    description: "Write auxiliary file /Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources"
+
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Base32.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Item+Coding.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Item.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/JSONValue.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Timestamp.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultDocument.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultError.swift"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/sources"]
+    description: "Write auxiliary file /Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/sources"
+
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/sources"]
+    description: "Write auxiliary file /Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/sources"
+
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<OTP-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/OTP.swiftmodule"]
+    outputs: ["<OTP-arm64-apple-macosx-debug.module>"]
+
+  "<VaultCore-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCore.swiftmodule"]
+    outputs: ["<VaultCore-arm64-apple-macosx-debug.module>"]
+
+  "<VaultCrypto-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCrypto.swiftmodule"]
+    outputs: ["<VaultCrypto-arm64-apple-macosx-debug.module>"]
+
+  "C.OTP-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/OTP/OneTimePassword.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCore.swiftmodule","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/OTP.swiftmodule"]
+    description: "Compiling Swift Module 'OTP' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","OTP","-emit-dependencies","-emit-module","-emit-module-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/OTP.swiftmodule","-output-file-map","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources","-I","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j10","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/include/OTP-Swift.h","-swift-version","6","-enable-upcoming-feature","ExistentialAny","-enable-upcoming-feature","InternalImportsByDefault","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","sealstone_kit"]
+
+  "C.VaultCore-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Base32.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Item+Coding.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Item.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/JSONValue.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/Timestamp.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultDocument.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/VaultError.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/sources"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCore.swiftmodule"]
+    description: "Compiling Swift Module 'VaultCore' (7 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","VaultCore","-emit-dependencies","-emit-module","-emit-module-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCore.swiftmodule","-output-file-map","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/sources","-I","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j10","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/include/VaultCore-Swift.h","-swift-version","6","-enable-upcoming-feature","ExistentialAny","-enable-upcoming-feature","InternalImportsByDefault","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","sealstone_kit"]
+
+  "C.VaultCrypto-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCore.swiftmodule","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/sources"]
+    outputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.swift.o","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCrypto.swiftmodule"]
+    description: "Compiling Swift Module 'VaultCrypto' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","VaultCrypto","-emit-dependencies","-emit-module","-emit-module-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCrypto.swiftmodule","-output-file-map","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/sources","-I","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j10","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/include/VaultCrypto-Swift.h","-swift-version","6","-enable-upcoming-feature","ExistentialAny","-enable-upcoming-feature","InternalImportsByDefault","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","sealstone_kit"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/OTP/","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCore/","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Package.swift","/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

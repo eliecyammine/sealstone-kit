@@ -1,0 +1,3 @@
+module VaultCore {
+    header "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/include/VaultCore-Swift.h"
+}
