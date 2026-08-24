@@ -102,7 +102,7 @@ public struct Keeper: Sendable, Hashable, Identifiable, Codable {
 }
 
 /// The whole vault: what gets encrypted into an Impression.
-public struct VaultDocument: Sendable, Hashable, Codable {
+public struct VaultDocument: Sendable, Hashable {
     public static let currentFormatVersion = 1
 
     public var formatVersion: Int
@@ -114,6 +114,14 @@ public struct VaultDocument: Sendable, Hashable, Codable {
     public var links: [Link]
     public var keepers: [Keeper]
 
+    /// Top-level keys written by a newer version, carried through untouched.
+    ///
+    /// Opening a vault in an older build and saving it must not destroy what
+    /// the newer build put there. Synthesised `Codable` cannot do this: it
+    /// writes back only the keys it has properties for, so the coding is
+    /// written out by hand in `VaultDocument+Coding.swift`.
+    public var unrecognised: [String: JSONValue]
+
     public init(
         vaultId: String = SealstoneID.make(.vault),
         createdAt: Timestamp = .now(),
@@ -121,7 +129,8 @@ public struct VaultDocument: Sendable, Hashable, Codable {
         accounts: [Account] = [],
         items: [Item] = [],
         links: [Link] = [],
-        keepers: [Keeper] = []
+        keepers: [Keeper] = [],
+        unrecognised: [String: JSONValue] = [:]
     ) {
         self.formatVersion = Self.currentFormatVersion
         self.vaultId = vaultId
@@ -131,6 +140,7 @@ public struct VaultDocument: Sendable, Hashable, Codable {
         self.items = items
         self.links = links
         self.keepers = keepers
+        self.unrecognised = unrecognised
     }
 }
 
