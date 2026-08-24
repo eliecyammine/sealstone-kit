@@ -119,6 +119,27 @@ final class ConformanceTests: XCTestCase {
                        "the unknown item type was lost on re-encoding")
     }
 
+    /// Optional, and only on an item that has been used.
+    func testLastUsedSurvivesRoundTrip() throws {
+        let family = families(ofKind: "open-succeeds").first { $0["id"] as? String == "03-full-vault" }!
+        let blob = try bytes(family["file"] as! String)
+        let (plaintext, _) = try Impression.open(blob, using: .passphrase(passphrase(family)))
+
+        var document = try JSONDecoder().decode(VaultDocument.self, from: Data(plaintext))
+        for pass in 1...2 {
+            let used = document.items.first { $0.id == "itm_totp" }
+            XCTAssertEqual(used?.lastUsedAt?.description, "2026-08-24T09:30:00Z",
+                           "pass \(pass): lastUsedAt was lost")
+
+            let never = document.items.first { $0.id == "itm_hotp" }
+            XCTAssertNil(never?.lastUsedAt,
+                         "pass \(pass): an unused item gained a lastUsedAt")
+
+            document = try JSONDecoder().decode(
+                VaultDocument.self, from: try JSONEncoder().encode(document))
+        }
+    }
+
     /// Not only at the root. A new optional field lands on an account or a
     /// keeper far more often than at the document root, so that is where a
     /// decoder which drops what it does not understand loses real data.
