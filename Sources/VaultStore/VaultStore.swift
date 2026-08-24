@@ -74,51 +74,30 @@ public actor VaultStore {
         return result
     }
 
+    /// The vault is deliberately not swept into iCloud Backup. Restoring a
+    /// device restores the app, not the vault; the sealed backup is the only
+    /// restore path, which is what keeps the vault out of anyone else's
+    /// infrastructure. `SealedFile` is what guarantees that, and it throws
+    /// rather than swallowing a failure to exclude.
     private func write(_ document: VaultDocument, key: [UInt8]) throws {
         let plaintext = try encode(document)
         let sealed = try Impression.seal(plaintext, using: .key(key))
 
-        // Write beside the target, then swap. The swap is the only step that
-        // can be observed as a change, and it either happened or it did not.
-        let temporary = location.deletingLastPathComponent()
-            .appendingPathComponent(".\(location.lastPathComponent).writing")
-
         do {
-            try fileManager.createDirectory(
-                at: location.deletingLastPathComponent(),
-                withIntermediateDirectories: true)
-
-            try Data(sealed).write(to: temporary, options: .atomic)
-            try excludeFromBackup(temporary)
-
-            if fileManager.fileExists(atPath: location.path) {
-                _ = try fileManager.replaceItemAt(location, withItemAt: temporary)
-            } else {
-                try fileManager.moveItem(at: temporary, to: location)
-            }
-            try excludeFromBackup(location)
-        } catch {
-            try? fileManager.removeItem(at: temporary)
-            throw Failure.writeFailed(error.localizedDescription)
+            try SealedFile(url: location, fileManager: fileManager).write(sealed)
+        } catch let failure as SealedFile.Failure {
+            throw translate(failure)
         }
     }
 
-    /// The vault is deliberately not swept into iCloud Backup. Restoring a
-    /// device restores the app, not the vault; the sealed backup is the only
-    /// restore path, which is what keeps the vault out of anyone else's
-    /// infrastructure.
-    private func excludeFromBackup(_ url: URL) throws {
-        var mutable = url
-        var values = URLResourceValues()
-        values.isExcludedFromBackup = true
-
-        do {
-            try mutable.setResourceValues(values)
-        } catch {
-            // Not swallowed. Keeping the vault out of iCloud Backup is a
-            // stated guarantee, and a silent failure here would leave it in
-            // there while the product claimed otherwise.
-            throw Failure.backupExclusionFailed(error.localizedDescription)
+    /// `SealedFile` has its own error surface. Callers of `VaultStore` have
+    /// only ever seen this one, so the mapping stays here rather than leaking
+    /// a second vocabulary into the app.
+    private func translate(_ failure: SealedFile.Failure) -> Failure {
+        switch failure {
+        case .notFound: .noVaultAtLocation(location)
+        case .writeFailed(let detail): .writeFailed(detail)
+        case .backupExclusionFailed(let detail): .backupExclusionFailed(detail)
         }
     }
 
