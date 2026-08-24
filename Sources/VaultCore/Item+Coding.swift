@@ -15,9 +15,11 @@ extension Item: Codable {
         static let ordering = "ordering"
         static let createdAt = "createdAt"
         static let modifiedAt = "modifiedAt"
+        static let lastUsedAt = "lastUsedAt"
 
         static let common: Set<String> = [
             id, accountId, type, favorite, ordering, createdAt, modifiedAt,
+            lastUsedAt,
         ]
 
         /// Keys owned by each payload type, so they are not mistaken for
@@ -73,6 +75,15 @@ extension Item: Codable {
             modifiedAt = parsed
         }
 
+        var lastUsedAt: Timestamp?
+        if let text = raw[Key.lastUsedAt]?.stringValue {
+            guard let parsed = Timestamp(parsing: text) else {
+                throw VaultError.invalidField(Key.lastUsedAt, in: "item \(id)",
+                                              reason: "must be an ISO 8601 timestamp")
+            }
+            lastUsedAt = parsed
+        }
+
         let payload = try Item.decodePayload(type: type, from: raw, itemId: id)
 
         var leftover = raw
@@ -92,6 +103,7 @@ extension Item: Codable {
             ordering: raw[Key.ordering]?.intValue ?? 0,
             createdAt: createdAt,
             modifiedAt: modifiedAt,
+            lastUsedAt: lastUsedAt,
             unrecognised: leftover
         )
     }
@@ -107,6 +119,7 @@ extension Item: Codable {
         if favorite { fields[Key.favorite] = .bool(true) }
         if ordering != 0 { fields[Key.ordering] = .number(Double(ordering)) }
         if let modifiedAt { fields[Key.modifiedAt] = .string(modifiedAt.description) }
+        if let lastUsedAt { fields[Key.lastUsedAt] = .string(lastUsedAt.description) }
 
         for (key, value) in try Item.encodePayload(payload) {
             fields[key] = value

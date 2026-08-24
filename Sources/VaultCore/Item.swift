@@ -11,6 +11,17 @@ public struct Item: Sendable, Hashable, Identifiable {
     public var ordering: Int
     public var createdAt: Timestamp
     public var modifiedAt: Timestamp?
+
+    /// When this credential was last used, which for an authenticator means
+    /// the last time its code was copied.
+    ///
+    /// Answers a question the user otherwise cannot: re-enrolling with a
+    /// service leaves two codes for one account, only one of which still
+    /// works, and the one being used every week is not the one to delete.
+    ///
+    /// Absent on an item that has never been used. Optional to write, but a
+    /// decoder that does not write it must still preserve one it reads.
+    public var lastUsedAt: Timestamp?
     public var payload: Payload
 
     /// Fields present in the file that this version does not know about.
@@ -26,6 +37,7 @@ public struct Item: Sendable, Hashable, Identifiable {
         ordering: Int = 0,
         createdAt: Timestamp = .now(),
         modifiedAt: Timestamp? = nil,
+        lastUsedAt: Timestamp? = nil,
         unrecognised: [String: JSONValue] = [:]
     ) {
         self.id = id
@@ -35,6 +47,7 @@ public struct Item: Sendable, Hashable, Identifiable {
         self.ordering = ordering
         self.createdAt = createdAt
         self.modifiedAt = modifiedAt
+        self.lastUsedAt = lastUsedAt
         self.unrecognised = unrecognised
     }
 }
