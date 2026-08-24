@@ -18,6 +18,7 @@ public actor VaultStore {
         case vaultAlreadyExists(URL)
         case writeFailed(String)
         case backupUnreadable(String)
+        case backupExclusionFailed(String)
     }
 
     private let location: URL
@@ -110,7 +111,15 @@ public actor VaultStore {
         var mutable = url
         var values = URLResourceValues()
         values.isExcludedFromBackup = true
-        try? mutable.setResourceValues(values)
+
+        do {
+            try mutable.setResourceValues(values)
+        } catch {
+            // Not swallowed. Keeping the vault out of iCloud Backup is a
+            // stated guarantee, and a silent failure here would leave it in
+            // there while the product claimed otherwise.
+            throw Failure.backupExclusionFailed(error.localizedDescription)
+        }
     }
 
     // MARK: - Backups

@@ -8,6 +8,12 @@ import Foundation
 /// The work is deliberately expensive: at the shipping parameters this
 /// allocates 64 MiB and takes a noticeable fraction of a second. That cost is
 /// the entire point — it is what makes a leaked backup expensive to attack.
+///
+/// **Known limitation.** The 64 MiB working buffer is not zeroed when the
+/// derivation finishes. Swift arrays move under copy-on-write and ARC, so a
+/// wipe here would zero one copy while others may persist, which is worse than
+/// not claiming it — the buffer holds intermediate state rather than the key,
+/// and the key itself is handled by the caller.
 public enum Argon2id {
     public enum Variant: UInt32 {
         case d = 0, i = 1, id = 2
@@ -20,8 +26,17 @@ public enum Argon2id {
 
     public enum Failure: Error, Sendable, Equatable {
         case parametersOutOfRange(String)
-        case allocationRefused(requestedKiB: Int)
+        case allocationRefused(requestedKiB: Int, limitKiB: Int)
     }
+
+    /// The most memory any single derivation may request.
+    ///
+    /// Enforced here rather than only at the envelope, because this function
+    /// is public and a caller reaching it directly would otherwise face no
+    /// limit at all. Exceeding what the device can give is not a slow
+    /// derivation, it is the process being killed — which a user cannot
+    /// distinguish from losing their vault.
+    public static let maxMemoryKiB = 1_048_576
 
     /// - Parameters:
     ///   - memoryKiB: `m`, in kibibytes.
@@ -50,6 +65,10 @@ public enum Argon2id {
         guard memoryKiB >= 8 * parallelism else {
             throw Failure.parametersOutOfRange(
                 "memory must be at least 8 times parallelism")
+        }
+        guard memoryKiB <= maxMemoryKiB else {
+            throw Failure.allocationRefused(requestedKiB: memoryKiB,
+                                            limitKiB: maxMemoryKiB)
         }
 
         let h0 = initialHash(
@@ -255,7 +274,6 @@ public enum Argon2id {
             }
         }
 
-        _ = zeroBlock
     }
 
     // MARK: - Compression

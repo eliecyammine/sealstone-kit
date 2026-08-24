@@ -141,6 +141,32 @@ final class ConformanceTests: XCTestCase {
         }
     }
 
+    /// Truncation is a different failure from tampering: the surviving bytes
+    /// are genuine, so an implementation that reads before checking length
+    /// crashes rather than reporting.
+    func testEveryTruncationIsRejectedCleanly() throws {
+        guard let family = families(ofKind: "open-fails").first(where: {
+            $0["id"] as? String == "11-truncation"
+        }) else {
+            return XCTFail("the truncation family is missing — run Scripts/sync-vectors.sh")
+        }
+        let text = passphrase(family)
+
+        _ = try Impression.open(try bytes(family["original"] as! String),
+                                using: .passphrase(text))
+
+        for testCase in family["cases"] as! [[String: Any]] {
+            let name = testCase["name"] as! String
+            let blob = try bytes(testCase["file"] as! String)
+
+            XCTAssertThrowsError(try Impression.open(blob, using: .passphrase(text)),
+                                 "truncation '\(name)' was accepted") { error in
+                XCTAssertTrue(error is ImpressionError,
+                              "truncation '\(name)' failed with \(error)")
+            }
+        }
+    }
+
     func testWrongPassphrasesAreRejected() throws {
         let family = families(ofKind: "open-fails").first { $0["id"] as? String == "06-wrong-passphrase" }!
         let blob = try bytes(family["file"] as! String)

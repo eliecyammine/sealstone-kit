@@ -225,6 +225,16 @@ public enum Impression {
         }
         offset += 2
 
+        // The format requires the KDF parameter fields to be zero when no key
+        // derivation function is in use. The authentication tag catches a file
+        // altered after sealing, but not one written this way, so the rule is
+        // checked rather than assumed.
+        if kdf == .none, memoryKiB != 0 || iterations != 0 || parallelism != 0 {
+            throw ImpressionError.notAnImpression(
+                "It declares no key derivation function but carries KDF "
+                + "parameters, which the format forbids.")
+        }
+
         // Every KDF parameter is range-checked here, before any allocation and
         // before the value reaches the derivation function. Out of range means
         // the header was altered or the file is malformed; either way, refuse.
