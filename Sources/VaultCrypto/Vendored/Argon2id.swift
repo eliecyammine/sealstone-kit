@@ -203,6 +203,20 @@ public enum Argon2id {
 
                     let start = (pass == 0 && slice == 0) ? 2 : 0
 
+                    // The first segment of the first pass starts at index 2,
+                    // because blocks 0 and 1 are already seeded from H0. That
+                    // skips the `index % blockWords == 0` trigger below, so the
+                    // first address block has to be generated here instead.
+                    // Without this the segment reads an all-zero address block,
+                    // which is invisible at the RFC's test parameters (segment
+                    // length 2, so the loop body never runs) and wrong at every
+                    // larger size.
+                    if dataIndependent && start == 2 {
+                        inputBlock[6] &+= 1
+                        compress(&scratch, zeroBlock, inputBlock)
+                        compress(&addressBlock, zeroBlock, scratch)
+                    }
+
                     for index in start..<segmentLength {
                         let column = slice * segmentLength + index
                         let previous = lane * laneLength + (column + laneLength - 1) % laneLength
