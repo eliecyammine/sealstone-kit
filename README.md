@@ -10,11 +10,14 @@ should not require trusting us.
 
 | Module | Responsibility |
 |---|---|
-| `VaultCore` | Entities, validation, item lifecycle, the recovery graph model |
+| `VaultCore` | Entities, identifiers, validation, the recovery graph model |
 | `VaultCrypto` | Key derivation, the Impression envelope, Shamir secret sharing |
+| `VaultStore` | Atomic persistence, backups, restore |
 | `OTP` | TOTP, HOTP and Steam codes |
+| `ImportExport` | `otpauth://` parsing and the import formats |
 
-`VaultStore` and `ImportExport` land with their sources.
+Dependencies run one way: `VaultCore` knows about nothing, and no module knows
+about a UI framework. CI enforces both.
 
 ## Dependencies
 
@@ -60,6 +63,23 @@ build cannot destroy a newer build's data by opening and saving.
 **Shamir is constant time.** No secret-dependent branches, no secret-dependent
 table indices. The log/exp tables that make this fast are deliberately not used,
 because a table lookup indexed by secret data leaks through the cache.
+
+**Identifiers are time-ordered, except where they are not.** Vault, account,
+item and link identifiers use the UUID version 7 layout, so they sort by
+creation and a vault dump reads chronologically. Keeper and bundle identifiers
+are fully random, because they appear in handover URLs and a timestamp there
+would tell whoever holds the link when the handover was configured. The choice
+is made by the identifier's kind, never by the caller.
+
+**Writes are atomic.** The vault is written beside the old file and swapped into
+place, so a crash mid-write leaves the previous vault intact. It is also
+excluded from iCloud Backup: restoring a device restores the app, not the vault,
+and the sealed backup is the only restore path.
+
+**Imports are staged.** Everything parses and validates before anything is
+applied, duplicates are detected on account *and* secret, and the result is
+validated again before it is returned. A partially applied import leaves someone
+unable to tell what they now have.
 
 ## Branches
 

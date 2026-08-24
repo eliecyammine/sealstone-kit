@@ -115,7 +115,7 @@ public struct VaultDocument: Sendable, Hashable, Codable {
     public var keepers: [Keeper]
 
     public init(
-        vaultId: String = UUID().uuidString.lowercased(),
+        vaultId: String = SealstoneID.make(.vault),
         createdAt: Timestamp = .now(),
         updatedAt: Timestamp = .now(),
         accounts: [Account] = [],
