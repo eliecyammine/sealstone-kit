@@ -1,7 +1,7 @@
 public import Foundation
 
 /// A service account, and the anchor everything else hangs from.
-public struct Account: Sendable, Hashable, Identifiable, Codable {
+public struct Account: Sendable, Hashable, Identifiable {
     public let id: String
     public var service: String
     public var identifier: String
@@ -10,6 +10,13 @@ public struct Account: Sendable, Hashable, Identifiable, Codable {
     public var notes: String?
     public var createdAt: Timestamp
 
+    /// Keys written by a newer version, carried through untouched.
+    ///
+    /// New optional fields land on this kind of object far more often than at
+    /// the document root, so dropping them here is the more likely way to lose
+    /// somebody's data.
+    public var unrecognised: [String: JSONValue]
+
     public init(
         id: String,
         service: String,
@@ -17,7 +24,8 @@ public struct Account: Sendable, Hashable, Identifiable, Codable {
         domain: String? = nil,
         tags: [String] = [],
         notes: String? = nil,
-        createdAt: Timestamp = .now()
+        createdAt: Timestamp = .now(),
+        unrecognised: [String: JSONValue] = [:]
     ) {
         self.id = id
         self.service = service
@@ -26,18 +34,26 @@ public struct Account: Sendable, Hashable, Identifiable, Codable {
         self.tags = tags
         self.notes = notes
         self.createdAt = createdAt
+        self.unrecognised = unrecognised
     }
 }
 
 /// "This account can be used to recover that one." The edges of the recovery
 /// graph, and the reason accounts and items are modelled separately.
-public struct Link: Sendable, Hashable, Identifiable, Codable {
+public struct Link: Sendable, Hashable, Identifiable {
     public let id: String
     public var sourceAccountId: String
     public var targetAccountId: String
     public var method: Method
     public var verifiedAt: Timestamp?
     public var note: String?
+
+    /// Keys written by a newer version, carried through untouched.
+    ///
+    /// New optional fields land on this kind of object far more often than at
+    /// the document root, so dropping them here is the more likely way to lose
+    /// somebody's data.
+    public var unrecognised: [String: JSONValue]
 
     public enum Method: String, Sendable, Codable, CaseIterable {
         case email, sms, voice
@@ -51,7 +67,8 @@ public struct Link: Sendable, Hashable, Identifiable, Codable {
         targetAccountId: String,
         method: Method,
         verifiedAt: Timestamp? = nil,
-        note: String? = nil
+        note: String? = nil,
+        unrecognised: [String: JSONValue] = [:]
     ) {
         self.id = id
         self.sourceAccountId = sourceAccountId
@@ -59,6 +76,7 @@ public struct Link: Sendable, Hashable, Identifiable, Codable {
         self.method = method
         self.verifiedAt = verifiedAt
         self.note = note
+        self.unrecognised = unrecognised
     }
 }
 
@@ -66,7 +84,7 @@ public struct Link: Sendable, Hashable, Identifiable, Codable {
 ///
 /// The fragment itself is never stored — the point is that it left. Only the
 /// index is kept, so the app can say which fragment a given keeper holds.
-public struct Keeper: Sendable, Hashable, Identifiable, Codable {
+public struct Keeper: Sendable, Hashable, Identifiable {
     public let id: String
     public var displayName: String
     public var contact: String
@@ -75,6 +93,13 @@ public struct Keeper: Sendable, Hashable, Identifiable, Codable {
     public var issuedAt: Timestamp
     public var lastConfirmedAt: Timestamp?
     public var status: Status
+
+    /// Keys written by a newer version, carried through untouched.
+    ///
+    /// New optional fields land on this kind of object far more often than at
+    /// the document root, so dropping them here is the more likely way to lose
+    /// somebody's data.
+    public var unrecognised: [String: JSONValue]
 
     public enum Status: String, Sendable, Codable, CaseIterable {
         case active, unreachable, revoked
@@ -88,7 +113,8 @@ public struct Keeper: Sendable, Hashable, Identifiable, Codable {
         fragmentIndex: Int,
         issuedAt: Timestamp = .now(),
         lastConfirmedAt: Timestamp? = nil,
-        status: Status = .active
+        status: Status = .active,
+        unrecognised: [String: JSONValue] = [:]
     ) {
         self.id = id
         self.displayName = displayName
@@ -98,6 +124,7 @@ public struct Keeper: Sendable, Hashable, Identifiable, Codable {
         self.issuedAt = issuedAt
         self.lastConfirmedAt = lastConfirmedAt
         self.status = status
+        self.unrecognised = unrecognised
     }
 }
 
