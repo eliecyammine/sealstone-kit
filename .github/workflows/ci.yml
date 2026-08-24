@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assert no package dependencies
+        run: |
+          if grep -qE '^\s*\.package\(' Package.swift; then
+            echo "Package.swift declares a dependency. This package uses the"
+            echo "platform and one vendored Argon2id, and nothing else."
+            exit 1
+          fi
+          echo "No package dependencies."
+
+      - name: Assert the core has no UI framework imports
+        run: |
+          hits=$(grep -rlE '^\s*(public |private |internal )?import (SwiftUI|UIKit|AppKit|WebKit|StoreKit|Combine)' \
+            Sources/VaultCore Sources/VaultCrypto Sources/OTP 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "A core module imports a UI framework:"
+            echo "$hits"
+            exit 1
+          fi
+          echo "Core modules are free of UI frameworks."
+
+      - name: Build
+        run: swift build -v
+
+      - name: Test
+        run: swift test
