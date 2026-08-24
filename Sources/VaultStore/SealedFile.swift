@@ -62,13 +62,27 @@ public struct SealedFile {
                 withIntermediateDirectories: true)
 
             try Data(sealed).write(to: temporary, options: .atomic)
-            try excludeFromBackup(temporary)
+
+            // Before the swap, so a failure here changes nothing: the
+            // temporary file is removed and what was already there is
+            // untouched. Reported as a write failure rather than an exclusion
+            // failure, because from the caller's side nothing was written.
+            do {
+                try excludeFromBackup(temporary)
+            } catch {
+                throw Failure.writeFailed(
+                    "the file couldn't be kept out of iCloud Backup, so it wasn't written")
+            }
 
             if fileManager.fileExists(atPath: url.path) {
                 _ = try fileManager.replaceItemAt(url, withItemAt: temporary)
             } else {
                 try fileManager.moveItem(at: temporary, to: url)
             }
+
+            // After the swap the new contents are in place. Failing here
+            // leaves a real file that is not excluded, which is worth saying
+            // plainly rather than undoing a save that succeeded.
             try excludeFromBackup(url)
         } catch let failure as Failure {
             try? fileManager.removeItem(at: temporary)

@@ -19,6 +19,8 @@ public actor VaultStore {
         case writeFailed(String)
         case backupUnreadable(String)
         case backupExclusionFailed(String)
+        /// The document would not survive being read back.
+        case wouldNotLoad(String)
     }
 
     private let location: URL
@@ -61,6 +63,25 @@ public actor VaultStore {
         try write(updated, key: key)
     }
 
+    /// Checked on the way out as well as on the way in.
+    ///
+    /// Loading has always validated. Writing did not, which meant a document
+    /// could be sealed and stored and then refuse to open: the vault would be
+    /// intact, encrypted, and unreadable by its own decoder. Nothing in the
+    /// interface can produce one today, but "no caller does this yet" is not
+    /// something a store should rely on, and the failure it guards against is
+    /// silent until the next launch.
+    ///
+    /// The check happens before anything is written, so a document that would
+    /// not load is refused rather than replacing one that does.
+    private func validate(_ document: VaultDocument) throws {
+        do {
+            try VaultValidator.validate(document)
+        } catch {
+            throw Failure.wouldNotLoad(error.localizedDescription)
+        }
+    }
+
     /// Loads, applies a change, and saves — as one operation, so two callers
     /// cannot interleave a read and a write and lose one of the changes.
     @discardableResult
@@ -80,6 +101,7 @@ public actor VaultStore {
     /// infrastructure. `SealedFile` is what guarantees that, and it throws
     /// rather than swallowing a failure to exclude.
     private func write(_ document: VaultDocument, key: [UInt8]) throws {
+        try validate(document)
         let plaintext = try encode(document)
         let sealed = try Impression.seal(plaintext, using: .key(key))
 
@@ -203,6 +225,10 @@ extension VaultStore.Failure: LocalizedError {
             "The vault was saved, but couldn't be marked as excluded from iCloud "
             + "Backup: \(detail). Turn off iCloud Backup for Sealstone in "
             + "Settings, or restart and try again."
+
+        case .wouldNotLoad(let detail):
+            "That change wasn't saved, because the result wouldn't open again: "
+            + "\(detail). Your previous version is still intact."
         }
     }
 }

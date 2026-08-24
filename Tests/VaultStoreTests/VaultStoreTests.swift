@@ -127,15 +127,39 @@ final class VaultStoreTests: XCTestCase {
         try await store.destroy()
     }
 
+    /// Writing refuses a document that could not be read back.
+    ///
+    /// The guard exists so a vault cannot be sealed, stored, and then refuse to
+    /// open: intact, encrypted, and unreadable by its own decoder.
+    func testWritingRefusesADocumentThatWouldNotLoad() async throws {
+        do {
+            try await store.create(brokenDocument(), key: key)
+            XCTFail("a vault with a dangling reference was written")
+        } catch let failure as VaultStore.Failure {
+            guard case .wouldNotLoad = failure else {
+                return XCTFail("wrong error: \(failure)")
+            }
+        }
+    }
+
+    /// And a refused write leaves what was already there alone.
+    func testARefusedWriteLeavesTheVaultIntact() async throws {
+        try await store.create(sampleDocument(), key: key)
+        try? await store.save(brokenDocument(), key: key)
+
+        let loaded = try await store.load(key: key)
+        XCTAssertEqual(loaded.vaultId, sampleDocument().vaultId)
+    }
+
+    /// Loading still validates too. A file planted by anything other than this
+    /// store, or corrupted in place, must not open just because it decodes.
     func testValidationRunsOnLoad() async throws {
-        // A document with a dangling reference must not be loadable, even
-        // though it encodes and decodes fine.
-        var broken = sampleDocument()
-        broken.items = [Item(id: "i1", accountId: "does-not-exist",
-                             payload: .note(Note(title: "t", body: "b")))]
+        // Written past the store, since the store now refuses to write it.
+        let plaintext = try JSONEncoder().encode(brokenDocument())
+        let sealed = try Impression.seal([UInt8](plaintext), using: .key(key))
+        try SealedFile(url: await store.url).write(sealed)
 
         do {
-            try await store.create(broken, key: key)
             _ = try await store.load(key: key)
             XCTFail("a vault with a dangling reference loaded")
         } catch let error as VaultError {
@@ -143,6 +167,13 @@ final class VaultStoreTests: XCTestCase {
                 return XCTFail("wrong error: \(error)")
             }
         }
+    }
+
+    private func brokenDocument() -> VaultDocument {
+        var broken = sampleDocument()
+        broken.items = [Item(id: "i1", accountId: "does-not-exist",
+                             payload: .note(Note(title: "t", body: "b")))]
+        return broken
     }
 }
 

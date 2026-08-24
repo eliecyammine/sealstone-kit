@@ -171,6 +171,38 @@ public struct VaultDocument: Sendable, Hashable {
     }
 }
 
+// MARK: - Accounts
+
+extension VaultDocument {
+    /// The account for a service and identifier, creating one if there is none.
+    ///
+    /// Two credentials for the same service and the same login belong to one
+    /// account, which is what lets a TOTP secret and that account's recovery
+    /// codes sit together. Deciding when two names are the same account is the
+    /// whole of it, and it has to be decided in one place: every caller that
+    /// writes its own version is a way for two of them to disagree about
+    /// whether "GitHub" and "github" are one account or two.
+    ///
+    /// Matching is case-insensitive and locale-aware. These are names people
+    /// typed or a service exported, not identifiers, and `lowercased()` gets
+    /// languages such as Turkish wrong.
+    public mutating func accountId(forService service: String,
+                                   identifier: String) -> String {
+        if let existing = accounts.first(where: {
+            $0.service.caseInsensitiveCompare(service) == .orderedSame
+                && $0.identifier.caseInsensitiveCompare(identifier) == .orderedSame
+        }) {
+            return existing.id
+        }
+
+        let account = Account(id: SealstoneID.make(.account),
+                              service: service,
+                              identifier: identifier)
+        accounts.append(account)
+        return account.id
+    }
+}
+
 // MARK: - Lookups
 
 extension VaultDocument {

@@ -141,20 +141,11 @@ public struct ImportStaging: Sendable {
     }
 
     /// Finds or creates the account a candidate belongs to.
+    ///
+    /// The rule lives on the document so importing and adding by hand cannot
+    /// disagree about when two names are the same account.
     private func accountFor(_ candidate: Candidate, in document: inout VaultDocument) -> String {
-        let service = candidate.issuer ?? candidate.account
-
-        if let existing = document.accounts.first(where: {
-            $0.service.lowercased() == service.lowercased()
-                && $0.identifier.lowercased() == candidate.account.lowercased()
-        }) {
-            return existing.id
-        }
-
-        let account = Account(id: SealstoneID.make(.account),
-                              service: service,
-                              identifier: candidate.account)
-        document.accounts.append(account)
-        return account.id
+        document.accountId(forService: candidate.issuer ?? candidate.account,
+                           identifier: candidate.account)
     }
 }
