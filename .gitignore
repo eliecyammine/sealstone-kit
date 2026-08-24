@@ -1,7 +1,28 @@
+# macOS
 .DS_Store
 ._*
+
+# Swift Package Manager
 .build/
 .swiftpm/
+Package.resolved
+
+# Xcode
 DerivedData/
 *.xcuserstate
-Package.resolved
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Secrets and signing — never commit
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest
+.env
+.env.*
+!.env.example
+AuthKey_*.p8
+
+# Vault files, except test fixtures
+*.seal
+!Tests/**/Vectors/**/*.seal
