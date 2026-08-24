@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Pinned so a runner image update cannot silently change the toolchain
+      # under us. Swift 6 strict concurrency needs 6.0 or later.
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app
+
+      - name: Report toolchain
+        run: swift --version
+
+      - name: Assert no package dependencies
+        run: |
+          if grep -qE '^\s*\.package\(' Package.swift; then
+            echo "Package.swift declares a dependency. This package uses the"
+            echo "platform and one vendored Argon2id, and nothing else."
+            exit 1
+          fi
+          echo "No package dependencies."
+
+      - name: Assert the core has no UI framework imports
+        run: |
+          hits=$(grep -rlE '^\s*(public |private |internal )?import (SwiftUI|UIKit|AppKit|WebKit|StoreKit|Combine)' \
+            Sources/VaultCore Sources/VaultCrypto Sources/OTP 2>/dev/null || true)
+          if [ -n "$hits" ]; then
+            echo "A core module imports a UI framework:"
+            echo "$hits"
+            exit 1
+          fi
+          echo "Core modules are free of UI frameworks."
+
+      # Git does not track empty directories, so a target whose sources were
+      # never committed builds locally and fails here. Catch it as a clear
+      # message rather than an SPM path error.
+      - name: Assert every declared target has sources
+        run: |
+          missing=""
+          for dir in Sources/* Tests/*; do
+            [ -d "$dir" ] || continue
+            if [ -z "$(find "$dir" -name '*.swift' -print -quit)" ]; then
+              missing="$missing $dir"
+            fi
+          done
+          if [ -n "$missing" ]; then
+            echo "These targets have no Swift sources:$missing"
+            echo "Either add sources or remove the target from Package.swift."
+            exit 1
+          fi
+          echo "Every target has sources."
+
+      - name: Assert the vector corpus is present
+        run: |
+          if [ ! -f Tests/ConformanceTests/Vectors/manifest.json ]; then
+            echo "The vector corpus is missing. Run Scripts/sync-vectors.sh."
+            exit 1
+          fi
+          echo "Corpus present: $(find Tests/ConformanceTests/Vectors -type f | wc -l | tr -d ' ') files."
+
+      - name: Build
+        run: swift build
+
+      - name: Test
+        run: swift test

@@ -91,8 +91,8 @@ extension Timestamp {
             + "T\(pad(hour, 2)):\(pad(minute, 2)):\(pad(second, 2))Z"
     }
 
-    /// Accepts `YYYY-MM-DDTHH:MM:SS` with optional fractional seconds and an
-    /// offset of `Z` or `±HH:MM`.
+    /// Accepts `YYYY-MM-DDTHH:MM:SS` with optional fractional seconds and a
+    /// required offset of `Z` or `±HH:MM`.
     static func parse(_ text: String) -> Date? {
         let scalars = Array(text.utf8)
         guard scalars.count >= 19 else { return nil }
@@ -129,8 +129,13 @@ extension Timestamp {
             }
         }
 
+        // An explicit offset is required. A bare timestamp is ambiguous about
+        // which zone it means, and guessing UTC could be hours wrong in a file
+        // written by software we have never seen.
+        guard index < scalars.count else { return nil }
+
         var offsetSeconds = 0
-        if index < scalars.count {
+        do {
             let marker = scalars[index]
             if marker == UInt8(ascii: "Z") || marker == UInt8(ascii: "z") {
                 index += 1
