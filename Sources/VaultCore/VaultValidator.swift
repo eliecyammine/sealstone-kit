@@ -49,9 +49,19 @@ public enum VaultValidator {
     }
 
     private static func validate(_ authenticator: Authenticator, itemId: String) throws {
-        guard (6...10).contains(authenticator.digits) else {
-            throw VaultError.invalidField("digits", in: "item \(itemId)",
-                                          reason: "must be between 6 and 10")
+        // A Steam code is five characters drawn from a 26-symbol alphabet, so
+        // the digit-count rule does not apply to it.
+        switch authenticator.kind {
+        case .steam:
+            guard authenticator.digits == 5 else {
+                throw VaultError.invalidField("digits", in: "item \(itemId)",
+                                              reason: "a Steam code is always 5 characters")
+            }
+        case .totp, .hotp:
+            guard (6...10).contains(authenticator.digits) else {
+                throw VaultError.invalidField("digits", in: "item \(itemId)",
+                                              reason: "must be between 6 and 10")
+            }
         }
         guard (1...300).contains(authenticator.period) else {
             throw VaultError.invalidField("period", in: "item \(itemId)",

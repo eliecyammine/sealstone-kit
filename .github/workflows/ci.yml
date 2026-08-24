@@ -73,3 +73,10 @@ jobs:
 
       - name: Test
         run: swift test
+
+      # Production Argon2 parameters. Slow, and therefore the thing most likely
+      # to go untested if it is not asked for explicitly.
+      - name: Test at production parameters
+        env:
+          SEALSTONE_SLOW_TESTS: "1"
+        run: swift test --filter ConformanceTests

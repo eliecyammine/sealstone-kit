@@ -177,7 +177,7 @@ extension Item {
             return .authenticator(Authenticator(
                 secret: secret,
                 algorithm: algorithm,
-                digits: raw["digits"]?.intValue ?? 6,
+                digits: raw["digits"]?.intValue ?? (otpType == "steam" ? 5 : 6),
                 period: raw["period"]?.intValue ?? 30,
                 kind: kind
             ))

@@ -8,6 +8,7 @@ public import VaultCore
 public enum Importer {
     public enum Format: String, Sendable, CaseIterable {
         case otpauthURIs
+        case googleAuthenticator
         case aegis
         case twoFAS
         case enteAuth
@@ -17,6 +18,7 @@ public enum Importer {
         public var displayName: String {
             switch self {
             case .otpauthURIs: "otpauth:// URIs"
+            case .googleAuthenticator: "Google Authenticator"
             case .aegis: "Aegis"
             case .twoFAS: "2FAS"
             case .enteAuth: "Ente Auth"
@@ -39,11 +41,13 @@ public enum Importer {
         guard let text = String(data: data, encoding: .utf8) else { return nil }
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
+        if GoogleAuthenticatorMigration.isMigrationURI(trimmed) { return .googleAuthenticator }
         if trimmed.lowercased().hasPrefix("otpauth://") { return .otpauthURIs }
 
         guard trimmed.hasPrefix("{") || trimmed.hasPrefix("["),
               let object = try? JSONSerialization.jsonObject(with: Data(trimmed.utf8))
         else {
+            if trimmed.contains("otpauth-migration://") { return .googleAuthenticator }
             return trimmed.contains("otpauth://") ? .otpauthURIs : nil
         }
 
@@ -66,6 +70,9 @@ public enum Importer {
         }
 
         switch resolved {
+        case .googleAuthenticator:
+            return try GoogleAuthenticatorMigration.parse(
+                String(decoding: data, as: UTF8.self))
         case .otpauthURIs:
             return stageURIs(data)
         case .aegis:
@@ -125,9 +132,9 @@ public enum Importer {
 
             let kindName = (entry["type"] as? String ?? "totp").lowercased()
             let algorithmName = (info["algo"] as? String ?? "SHA1").uppercased()
-            let digits = info["digits"] as? Int ?? 6
+            let digits = info["digits"] as? Int ?? (kindName == "steam" ? 5 : 6)
             let period = info["period"] as? Int ?? 30
-            let counter = (info["counter"] as? Int).map { UInt64($0) }
+            let counter = nonNegative(info["counter"] as? Int)
 
             do {
                 let authenticator = try makeAuthenticator(
@@ -164,10 +171,11 @@ public enum Importer {
                 let authenticator = try makeAuthenticator(
                     secret: secret,
                     algorithm: (otp["algorithm"] as? String ?? "SHA1").uppercased(),
-                    digits: otp["digits"] as? Int ?? 6,
+                    digits: otp["digits"] as? Int
+                        ?? ((otp["tokenType"] as? String ?? "").lowercased() == "steam" ? 5 : 6),
                     period: otp["period"] as? Int ?? 30,
                     kindName: (otp["tokenType"] as? String ?? "totp").lowercased(),
-                    counter: (otp["counter"] as? Int).map { UInt64($0) })
+                    counter: nonNegative(otp["counter"] as? Int))
                 candidates.append(.init(issuer: otp["issuer"] as? String ?? name,
                                         account: otp["account"] as? String ?? name,
                                         authenticator: authenticator))
@@ -242,10 +250,11 @@ public enum Importer {
                 let authenticator = try makeAuthenticator(
                     secret: secret,
                     algorithm: (string(["algorithm", "algo"]) ?? "SHA1").uppercased(),
-                    digits: integer(["digits"]) ?? 6,
+                    digits: integer(["digits"])
+                        ?? ((string(["type", "tokenType", "kind"]) ?? "").lowercased() == "steam" ? 5 : 6),
                     period: integer(["period", "timer"]) ?? 30,
                     kindName: (string(["type", "tokenType", "kind"]) ?? "totp").lowercased(),
-                    counter: integer(["counter"]).map { UInt64($0) })
+                    counter: nonNegative(integer(["counter"])))
                 candidates.append(.init(issuer: string(["issuer", "service"]),
                                         account: label,
                                         authenticator: authenticator))
@@ -257,6 +266,13 @@ public enum Importer {
     }
 
     // MARK: - Shared
+
+    /// Counters below zero are not representable and must not be converted.
+    /// A hand-edited export with `"counter": -1` is a rejection row, not a trap.
+    private static func nonNegative(_ value: Int?) -> UInt64? {
+        guard let value, value >= 0 else { return nil }
+        return UInt64(value)
+    }
 
     private static func makeAuthenticator(
         secret: String, algorithm: String, digits: Int, period: Int,
@@ -273,8 +289,14 @@ public enum Importer {
         guard let parsedAlgorithm = Authenticator.Algorithm(rawValue: algorithm) else {
             throw OTPAuthURI.Failure.invalidParameter("algorithm", algorithm)
         }
-        guard (6...10).contains(digits) else {
-            throw OTPAuthURI.Failure.invalidParameter("digits", String(digits))
+        if kindName == "steam" {
+            guard digits == 5 else {
+                throw OTPAuthURI.Failure.invalidParameter("digits", String(digits))
+            }
+        } else {
+            guard (6...10).contains(digits) else {
+                throw OTPAuthURI.Failure.invalidParameter("digits", String(digits))
+            }
         }
         guard (1...300).contains(period) else {
             throw OTPAuthURI.Failure.invalidParameter("period", String(period))

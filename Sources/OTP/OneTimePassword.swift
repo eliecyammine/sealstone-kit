@@ -18,8 +18,14 @@ public enum OneTimePassword {
         }
 
         let value = truncate(mac(secret: secret, counter: counter, algorithm: algorithm))
-        let modulus = UInt32(pow(10.0, Double(digits)))
-        return String(value % modulus).leftPadded(to: digits, with: "0")
+
+        // Computed as an integer in 64 bits. 10^10 exceeds UInt32.max, so
+        // deriving the modulus through Double and narrowing to UInt32 traps on
+        // the largest permitted code length.
+        var modulus: UInt64 = 1
+        for _ in 0..<digits { modulus *= 10 }
+
+        return String(UInt64(value) % modulus).leftPadded(to: digits, with: "0")
     }
 
     /// A time-based code. Pass `at` to reproduce a code for a known instant.
