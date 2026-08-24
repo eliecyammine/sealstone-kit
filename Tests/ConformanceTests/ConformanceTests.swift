@@ -119,6 +119,38 @@ final class ConformanceTests: XCTestCase {
                        "the unknown item type was lost on re-encoding")
     }
 
+    /// Not only at the root. A new optional field lands on an account or a
+    /// keeper far more often than at the document root, so that is where a
+    /// decoder which drops what it does not understand loses real data.
+    func testUnknownKeysSurviveEverywhere() throws {
+        let family = families(ofKind: "open-succeeds").first { $0["id"] as? String == "03-full-vault" }!
+        let blob = try bytes(family["file"] as! String)
+        let (plaintext, _) = try Impression.open(blob, using: .passphrase(passphrase(family)))
+
+        var document = try JSONDecoder().decode(VaultDocument.self, from: Data(plaintext))
+
+        // Read once, written, and read again: the round trip is where the
+        // dropping would happen, not the first parse.
+        for pass in 1...2 {
+            XCTAssertNotNil(document.unrecognised["settingsFromTheFuture"],
+                            "pass \(pass): a root key was dropped")
+
+            let account = document.accounts.first { $0.id == "acc_mail" }
+            XCTAssertNotNil(account?.unrecognised["fieldFromTheFuture"],
+                            "pass \(pass): an account key was dropped")
+
+            let link = document.links.first { $0.id == "lnk_mail_bank" }
+            XCTAssertEqual(link?.unrecognised["strengthFromTheFuture"], .string("weak"),
+                           "pass \(pass): a link key was dropped")
+
+            XCTAssertNotNil(document.keepers.first?.unrecognised["relayFromTheFuture"],
+                            "pass \(pass): a keeper key was dropped")
+
+            document = try JSONDecoder().decode(
+                VaultDocument.self, from: try JSONEncoder().encode(document))
+        }
+    }
+
     // MARK: - Files that must not open
 
     func testEveryTamperedRegionIsRejected() throws {
