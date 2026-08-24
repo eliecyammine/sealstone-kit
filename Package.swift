@@ -24,6 +24,14 @@ let package = Package(
         .testTarget(name: "VaultCoreTests", dependencies: ["VaultCore"]),
         .testTarget(name: "VaultCryptoTests", dependencies: ["VaultCrypto"]),
         .testTarget(name: "OTPTests", dependencies: ["OTP"]),
+
+        // Runs the vector corpus from sealstone-format against this
+        // implementation. Both must agree or one of them is wrong.
+        .testTarget(
+            name: "ConformanceTests",
+            dependencies: ["VaultCore", "VaultCrypto", "OTP"],
+            resources: [.copy("Vectors")]
+        ),
     ]
 )
 

@@ -1,1 +1,5 @@
-/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift
+/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/CryptoError.swift
+/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Impression.swift
+/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Shamir.swift
+/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Argon2id.swift
+/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Blake2b.swift

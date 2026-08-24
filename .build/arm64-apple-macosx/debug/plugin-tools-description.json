@@ -1,9 +1,26 @@
 {
   "builtTestProducts" : [
-
+    {
+      "binaryPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.xctest/Contents/MacOS/SealstoneKitPackageTests",
+      "packagePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit",
+      "productName" : "SealstoneKitPackageTests"
+    }
   ],
   "copyCommands" : {
-
+    "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKit_ConformanceTests.bundle/Vectors" : {
+      "inputs" : [
+        {
+          "kind" : "directory",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/Vectors"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "directory",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKit_ConformanceTests.bundle/Vectors"
+        }
+      ]
+    }
   },
   "explicitTargetDependencyImportCheckingMode" : {
     "none" : {
@@ -17,6 +34,136 @@
 
   ],
   "swiftCommands" : {
+    "C.ConformanceTests-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/sources",
+      "importPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/ConformanceTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/CrossImplementationTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/DerivedSources/resource_bundle_accessor.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "virtual",
+          "name" : "<ConformanceTests-arm64-apple-macosx-debug.module-resources>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCore.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCrypto.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/OTP.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "ConformanceTests",
+      "moduleOutputPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/ConformanceTests.swiftmodule",
+      "objects" : [
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/ConformanceTests.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/CrossImplementationTests.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/resource_bundle_accessor.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE",
+        "-module-cache-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-enable-upcoming-feature",
+        "ExistentialAny",
+        "-enable-upcoming-feature",
+        "InternalImportsByDefault",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "sealstone_kit"
+      ],
+      "outputFileMapPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/ConformanceTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/CrossImplementationTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/resource_bundle_accessor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/ConformanceTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/ConformanceTests.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/CrossImplementationTests.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/DerivedSources/resource_bundle_accessor.swift"
+      ],
+      "tempsPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build",
+      "wholeModuleOptimization" : false
+    },
     "C.OTP-arm64-apple-macosx-debug.module" : {
       "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
       "fileList" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources",
@@ -114,6 +261,105 @@
         "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/OTP/OneTimePassword.swift"
       ],
       "tempsPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.SealstoneKitPackageTests-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/sources",
+      "importPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.derived/runner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCryptoTests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/ConformanceTests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "SealstoneKitPackageTests",
+      "moduleOutputPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/SealstoneKitPackageTests.swiftmodule",
+      "objects" : [
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/runner.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/include/SealstoneKitPackageTests-Swift.h",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "sealstone_kit"
+      ],
+      "outputFileMapPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/SealstoneKitPackageTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.derived/runner.swift"
+      ],
+      "tempsPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build",
       "wholeModuleOptimization" : false
     },
     "C.VaultCore-arm64-apple-macosx-debug.module" : {
@@ -278,7 +524,23 @@
       "inputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift"
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/CryptoError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Impression.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Shamir.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Argon2id.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Blake2b.swift"
         },
         {
           "kind" : "file",
@@ -297,7 +559,11 @@
       "moduleName" : "VaultCrypto",
       "moduleOutputPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCrypto.swiftmodule",
       "objects" : [
-        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.swift.o"
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.swift.o"
       ],
       "otherArguments" : [
         "-target",
@@ -356,7 +622,23 @@
       "outputs" : [
         {
           "kind" : "file",
-          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.swift.o"
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.swift.o"
         },
         {
           "kind" : "file",
@@ -365,9 +647,131 @@
       ],
       "prepareForIndexing" : false,
       "sources" : [
-        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift"
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/CryptoError.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Impression.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Shamir.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Argon2id.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Blake2b.swift"
       ],
       "tempsPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.VaultCryptoTests-arm64-apple-macosx-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/sources",
+      "importPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Argon2idTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Blake2bTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/ShamirTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCrypto.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "VaultCryptoTests",
+      "moduleOutputPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCryptoTests.swiftmodule",
+      "objects" : [
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/Argon2idTests.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/Blake2bTests.swift.o",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/ShamirTests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-enable-upcoming-feature",
+        "ExistentialAny",
+        "-enable-upcoming-feature",
+        "InternalImportsByDefault",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "sealstone_kit"
+      ],
+      "outputFileMapPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/Argon2idTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/Blake2bTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/ShamirTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules/VaultCryptoTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Argon2idTests.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Blake2bTests.swift",
+        "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/ShamirTests.swift"
+      ],
+      "tempsPath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build",
       "wholeModuleOptimization" : false
     }
   },
@@ -375,6 +779,71 @@
 
   },
   "swiftTargetScanArgs" : {
+    "ConformanceTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "ConformanceTests",
+      "-package-name",
+      "sealstone_kit",
+      "-c",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/ConformanceTests.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/CrossImplementationTests.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/DerivedSources/resource_bundle_accessor.swift",
+      "-I",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE",
+      "-module-cache-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-swift-version",
+      "6",
+      "-enable-upcoming-feature",
+      "ExistentialAny",
+      "-enable-upcoming-feature",
+      "InternalImportsByDefault",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "sealstone_kit",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
     "OTP" : [
       "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
       "-module-name",
@@ -411,6 +880,66 @@
       "ExistentialAny",
       "-enable-upcoming-feature",
       "InternalImportsByDefault",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "sealstone_kit",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "SealstoneKitPackageTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "SealstoneKitPackageTests",
+      "-package-name",
+      "sealstone_kit",
+      "-c",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.derived/runner.swift",
+      "-I",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/include/SealstoneKitPackageTests-Swift.h",
       "-plugin-path",
       "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
       "-sdk",
@@ -516,7 +1045,11 @@
       "-package-name",
       "sealstone_kit",
       "-c",
-      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/CryptoError.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Impression.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Shamir.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Argon2id.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Blake2b.swift",
       "-I",
       "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
       "-target",
@@ -572,10 +1105,87 @@
       "sealstone_kit",
       "-driver-use-frontend-path",
       "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "VaultCryptoTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "VaultCryptoTests",
+      "-package-name",
+      "sealstone_kit",
+      "-c",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Argon2idTests.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Blake2bTests.swift",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/ShamirTests.swift",
+      "-I",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-swift-version",
+      "6",
+      "-enable-upcoming-feature",
+      "ExistentialAny",
+      "-enable-upcoming-feature",
+      "InternalImportsByDefault",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "sealstone_kit",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
     ]
   },
   "targetDependencyMap" : {
+    "ConformanceTests" : [
+      "OTP",
+      "VaultCrypto",
+      "VaultCore"
+    ],
     "OTP" : [
+      "VaultCore"
+    ],
+    "SealstoneKitPackageTests" : [
+      "ConformanceTests",
+      "OTP",
+      "VaultCryptoTests",
+      "VaultCrypto",
       "VaultCore"
     ],
     "VaultCore" : [
@@ -583,13 +1193,27 @@
     ],
     "VaultCrypto" : [
       "VaultCore"
+    ],
+    "VaultCryptoTests" : [
+      "VaultCrypto",
+      "VaultCore"
     ]
   },
   "testDiscoveryCommands" : {
 
   },
   "testEntryPointCommands" : {
+    "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.derived/runner.swift" : {
+      "inputs" : [
 
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.derived/runner.swift"
+        }
+      ]
+    }
   },
   "traitConfiguration" : {
     "default" : {
@@ -597,6 +1221,28 @@
     }
   },
   "writeCommands" : {
+    "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/ConformanceTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/ConformanceTests/CrossImplementationTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/DerivedSources/resource_bundle_accessor.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/sources"
+    },
     "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources" : {
       "alwaysOutOfDate" : false,
       "inputs" : [
@@ -610,6 +1256,110 @@
         }
       ],
       "outputFilePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/sources"
+    },
+    "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.derived/runner.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/sources"
+    },
+    "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/ConformanceTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/CrossImplementationTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/ConformanceTests.build/resource_bundle_accessor.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/OTP.build/OneTimePassword.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Base32.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item+Coding.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Item.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/JSONValue.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/Timestamp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultDocument.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/VaultError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/Argon2idTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/Blake2bTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/ShamirTests.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/SealstoneKitPackageTests.product/Objects.LinkFileList"
     },
     "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCore.build/sources" : {
       "alwaysOutOfDate" : false,
@@ -658,10 +1408,48 @@
         },
         {
           "kind" : "file",
-          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift"
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/CryptoError.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Impression.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Shamir.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Argon2id.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Blake2b.swift"
         }
       ],
       "outputFilePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/sources"
+    },
+    "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Argon2idTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/Blake2bTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Tests/VaultCryptoTests/ShamirTests.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCryptoTests.build/sources"
     },
     "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
       "alwaysOutOfDate" : true,

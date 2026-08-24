@@ -2,11 +2,39 @@
   "": {
     "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/primary.swiftdeps"
   },
-  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Placeholder.swift": {
-    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.d",
-    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.swift.o",
-    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder~partial.swiftmodule",
-    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.swiftdeps",
-    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Placeholder.dia"
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/CryptoError.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/CryptoError.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Impression.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Impression.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Shamir.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Shamir.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Argon2id.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Argon2id.dia"
+  },
+  "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/Sources/VaultCrypto/Vendored/Blake2b.swift": {
+    "dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.d",
+    "object": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.swift.o",
+    "swiftmodule": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b~partial.swiftmodule",
+    "swift-dependencies": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.swiftdeps",
+    "diagnostics": "/Users/elie/Projects/2-My-Projects/Sealstone/sealstone-kit/.build/arm64-apple-macosx/debug/VaultCrypto.build/Blake2b.dia"
   }
 }
