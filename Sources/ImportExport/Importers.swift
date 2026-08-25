@@ -13,6 +13,7 @@ public enum Importer {
         case twoFAS
         case enteAuth
         case raivo
+        case lastPass
         case genericJSON
 
         public var displayName: String {
@@ -23,6 +24,7 @@ public enum Importer {
             case .twoFAS: "2FAS"
             case .enteAuth: "Ente Auth"
             case .raivo: "Raivo"
+            case .lastPass: "LastPass Authenticator"
             case .genericJSON: "JSON"
             }
         }
@@ -54,6 +56,15 @@ public enum Importer {
         if let root = object as? [String: Any] {
             if root["db"] != nil, root["header"] != nil { return .aegis }
             if root["services"] != nil { return .twoFAS }
+
+            // LastPass also keys its list "accounts", so the list itself is
+            // what tells them apart: LastPass names the fields inside each
+            // entry differently from everyone else.
+            if let accounts = root["accounts"] as? [[String: Any]],
+               accounts.first?["issuerName"] != nil
+                || accounts.first?["originalIssuerName"] != nil {
+                return .lastPass
+            }
             if root["items"] != nil || root["entries"] != nil { return .genericJSON }
         }
         if let array = object as? [[String: Any]] {
@@ -79,7 +90,7 @@ public enum Importer {
             return try stageAegis(data)
         case .twoFAS:
             return try stageTwoFAS(data)
-        case .enteAuth, .raivo, .genericJSON:
+        case .enteAuth, .raivo, .lastPass, .genericJSON:
             return try stageGeneric(data)
         }
     }
@@ -211,21 +222,32 @@ public enum Importer {
         var rejections: [ImportStaging.Rejection] = []
 
         for row in rows {
-            func string(_ keys: [String]) -> String? {
+            // Matched without regard to case. Exports disagree about
+            // capitalisation as much as about wording: LastPass writes
+            // "userName", others write "username", and an exact match turns
+            // the difference into a vault full of accounts called "unknown".
+            func value(_ keys: [String]) -> Any? {
                 for key in keys {
-                    if let value = row[key] as? String, !value.isEmpty { return value }
+                    if let found = row.first(where: {
+                        $0.key.caseInsensitiveCompare(key) == .orderedSame
+                    })?.value {
+                        return found
+                    }
                 }
                 return nil
             }
+            func string(_ keys: [String]) -> String? {
+                guard let text = value(keys) as? String, !text.isEmpty else { return nil }
+                return text
+            }
             func integer(_ keys: [String]) -> Int? {
-                for key in keys {
-                    if let value = row[key] as? Int { return value }
-                    if let text = row[key] as? String, let value = Int(text) { return value }
-                }
+                if let number = value(keys) as? Int { return number }
+                if let text = value(keys) as? String, let number = Int(text) { return number }
                 return nil
             }
 
-            let label = string(["account", "name", "label", "username"]) ?? "unknown"
+            let label = string(["account", "name", "label", "username",
+                                "userName", "originalUserName", "email"]) ?? "unknown"
 
             // A whole otpauth URI in a field is common in hand-rolled exports.
             if let uri = string(["uri", "url", "otpauth"]),
@@ -252,10 +274,11 @@ public enum Importer {
                     algorithm: (string(["algorithm", "algo"]) ?? "SHA1").uppercased(),
                     digits: integer(["digits"])
                         ?? ((string(["type", "tokenType", "kind"]) ?? "").lowercased() == "steam" ? 5 : 6),
-                    period: integer(["period", "timer"]) ?? 30,
+                    period: integer(["period", "timer", "timeStep"]) ?? 30,
                     kindName: (string(["type", "tokenType", "kind"]) ?? "totp").lowercased(),
                     counter: nonNegative(integer(["counter"])))
-                candidates.append(.init(issuer: string(["issuer", "service"]),
+                candidates.append(.init(issuer: string(["issuer", "service", "issuerName",
+                                                        "originalIssuerName"]),
                                         account: label,
                                         authenticator: authenticator))
             } catch {
