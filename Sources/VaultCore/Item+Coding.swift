@@ -33,6 +33,7 @@ extension Item: Codable {
             case "securityQuestions": ["questions"]
             case "seedPhrase": ["words", "wordlist", "passphrase"]
             case "hardwareKey": ["label", "serial", "keyType"]
+            case "password": ["password", "username", "site", "note"]
             case "note": ["title", "body"]
             default: []
             }
@@ -246,6 +247,14 @@ extension Item {
                 keyType: raw["keyType"]?.stringValue
             ))
 
+        case "password":
+            return .password(Password(
+                password: raw["password"]?.stringValue ?? "",
+                username: raw["username"]?.stringValue,
+                site: raw["site"]?.stringValue,
+                note: raw["note"]?.stringValue
+            ))
+
         case "note":
             return .note(Note(
                 title: raw["title"]?.stringValue ?? "",
@@ -302,6 +311,15 @@ extension Item {
             var fields: [String: JSONValue] = ["label": .string(value.label)]
             fields["serial"] = value.serial.map { .string($0) } ?? .null
             fields["keyType"] = value.keyType.map { .string($0) } ?? .null
+            return fields
+
+        case .password(let value):
+            // Absent stays absent rather than becoming an empty string, which
+            // is what every other optional on an item does.
+            var fields: [String: JSONValue] = ["password": .string(value.password)]
+            if let username = value.username { fields["username"] = .string(username) }
+            if let site = value.site { fields["site"] = .string(site) }
+            if let note = value.note { fields["note"] = .string(note) }
             return fields
 
         case .note(let value):
