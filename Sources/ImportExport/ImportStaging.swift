@@ -16,6 +16,14 @@ public struct ImportStaging: Sendable {
         public let authenticator: Authenticator
         public var resolution: Resolution
 
+        /// The item in the vault this one duplicates, if any.
+        ///
+        /// Separate from `resolution` because it is a fact rather than a
+        /// choice. It used to live inside `.replace`, which meant choosing
+        /// Skip destroyed the only record of what would have been replaced,
+        /// and choosing Replace afterwards silently did nothing.
+        public internal(set) var duplicateOf: String?
+
         public init(issuer: String?, account: String,
                     authenticator: Authenticator,
                     resolution: Resolution = .add) {
@@ -64,8 +72,12 @@ public struct ImportStaging: Sendable {
         candidates.filter { if case .add = $0.resolution { true } else { false } }
     }
 
+    /// Candidates that already exist in the vault.
+    ///
+    /// Decided by what they are, not by what the user has chosen to do with
+    /// them, so a duplicate stays in this list after being set to Skip.
     public var duplicates: [Candidate] {
-        candidates.filter { if case .add = $0.resolution { false } else { true } }
+        candidates.filter { $0.duplicateOf != nil }
     }
 
     /// Marks candidates that already exist in `document`.
@@ -93,6 +105,7 @@ public struct ImportStaging: Sendable {
                                    identifier: candidate.account,
                                    secret: candidate.authenticator.secret)
             if let itemId = existing[key] {
+                candidates[index].duplicateOf = itemId
                 candidates[index].resolution = .replace(existingItemId: itemId)
             }
         }

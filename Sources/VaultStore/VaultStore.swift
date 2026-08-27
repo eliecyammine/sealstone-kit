@@ -166,7 +166,19 @@ public actor VaultStore {
     ///
     /// Verification decrypts and decodes rather than checking a hash this app
     /// wrote itself. A backup nobody has opened is a guess.
-    public nonisolated func verifyBackup(
+    /// Isolated to the store, deliberately.
+    ///
+    /// This was `nonisolated`, which reads as harmless and is not: a
+    /// `nonisolated` method called from the main actor runs synchronously on
+    /// the main thread rather than hopping anywhere. `await` in front of it
+    /// made that invisible. So opening a backup ran Argon2id at shipping
+    /// parameters on the UI thread, and the app locked solid for as long as it
+    /// took: no progress indicator could draw, because the frame that would
+    /// have drawn it never ran.
+    ///
+    /// Restoring goes through here too, and so does the check that follows
+    /// sealing, which is why all three flows froze.
+    public func verifyBackup(
         at source: URL,
         passphrase: String
     ) throws -> VaultDocument {
