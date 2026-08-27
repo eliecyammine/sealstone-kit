@@ -35,7 +35,26 @@ public struct ImportStaging: Sendable {
         }
 
         public var label: String {
-            issuer.map { "\($0) (\(account))" } ?? account
+            let issuer = self.issuer?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let account = self.account.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            switch (issuer.isEmpty, account.isEmpty) {
+            case (false, false): return "\(issuer) (\(account))"
+            case (false, true): return issuer
+            case (true, false): return account
+            case (true, true): return "Unnamed"
+            }
+        }
+
+        /// Whether the export gave this nothing to be called.
+        ///
+        /// Worth saying out loud on the review screen. An import is the one
+        /// moment the file is still in front of the user, so a row that
+        /// arrived nameless is a row they can still go and identify. Once it
+        /// is in the vault it is a secret with nothing attached to it.
+        public var isUnnamed: Bool {
+            (issuer ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && account.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
     }
 

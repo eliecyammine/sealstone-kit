@@ -134,10 +134,10 @@ public enum Importer {
         var rejections: [ImportStaging.Rejection] = []
 
         for entry in entries {
-            let name = entry["name"] as? String ?? "unknown"
+            let name = entry["name"] as? String ?? ""
             guard let info = entry["info"] as? [String: Any],
                   let secret = info["secret"] as? String else {
-                rejections.append(.init(source: name, reason: "no secret"))
+                rejections.append(.init(source: named(name), reason: "no secret"))
                 continue
             }
 
@@ -155,7 +155,7 @@ public enum Importer {
                                         account: name,
                                         authenticator: authenticator))
             } catch {
-                rejections.append(.init(source: name, reason: describe(error)))
+                rejections.append(.init(source: named(name), reason: describe(error)))
             }
         }
         return ImportStaging(candidates: candidates, rejections: rejections)
@@ -171,9 +171,9 @@ public enum Importer {
         var rejections: [ImportStaging.Rejection] = []
 
         for service in services {
-            let name = service["name"] as? String ?? "unknown"
+            let name = service["name"] as? String ?? ""
             guard let secret = service["secret"] as? String else {
-                rejections.append(.init(source: name, reason: "no secret"))
+                rejections.append(.init(source: named(name), reason: "no secret"))
                 continue
             }
 
@@ -187,11 +187,12 @@ public enum Importer {
                     period: otp["period"] as? Int ?? 30,
                     kindName: (otp["tokenType"] as? String ?? "totp").lowercased(),
                     counter: nonNegative(otp["counter"] as? Int))
-                candidates.append(.init(issuer: otp["issuer"] as? String ?? name,
+                candidates.append(.init(issuer: otp["issuer"] as? String
+                                            ?? (name.isEmpty ? nil : name),
                                         account: otp["account"] as? String ?? name,
                                         authenticator: authenticator))
             } catch {
-                rejections.append(.init(source: name, reason: describe(error)))
+                rejections.append(.init(source: named(name), reason: describe(error)))
             }
         }
         return ImportStaging(candidates: candidates, rejections: rejections)
@@ -222,16 +223,27 @@ public enum Importer {
         var rejections: [ImportStaging.Rejection] = []
 
         for row in rows {
-            // Matched without regard to case. Exports disagree about
-            // capitalisation as much as about wording: LastPass writes
-            // "userName", others write "username", and an exact match turns
-            // the difference into a vault full of accounts called "unknown".
+            // Matched without regard to case, and one level into nested
+            // objects. Exports disagree about capitalisation as much as about
+            // wording, and several bury the interesting fields one object
+            // deep. Only the keys named below are followed inwards: taking
+            // any string found nested would happily label an account with the
+            // name of the folder it was filed in.
             func value(_ keys: [String]) -> Any? {
                 for key in keys {
                     if let found = row.first(where: {
                         $0.key.caseInsensitiveCompare(key) == .orderedSame
-                    })?.value {
+                    })?.value, !(found is NSNull) {
                         return found
+                    }
+                }
+                for nested in row.values.compactMap({ $0 as? [String: Any] }) {
+                    for key in keys {
+                        if let found = nested.first(where: {
+                            $0.key.caseInsensitiveCompare(key) == .orderedSame
+                        })?.value, !(found is NSNull) {
+                            return found
+                        }
                     }
                 }
                 return nil
@@ -246,8 +258,14 @@ public enum Importer {
                 return nil
             }
 
-            let label = string(["account", "name", "label", "username",
-                                "userName", "originalUserName", "email"]) ?? "unknown"
+            // An unnamed row is left unnamed rather than called "unknown".
+            // A placeholder that looks like a name survives the review screen
+            // unchallenged and lands in the vault as though the export had
+            // said it, and every such row reads the same, so a vault of them
+            // cannot be told apart afterwards.
+            let label = string(["account", "accountName", "name", "label",
+                                "username", "userName", "originalUserName",
+                                "user", "login", "email", "displayName"]) ?? ""
 
             // A whole otpauth URI in a field is common in hand-rolled exports.
             if let uri = string(["uri", "url", "otpauth"]),
@@ -258,13 +276,15 @@ public enum Importer {
                                             account: parsed.account,
                                             authenticator: parsed.authenticator))
                 } catch {
-                    rejections.append(.init(source: label, reason: describe(error)))
+                    rejections.append(.init(source: named(label),
+                                            reason: describe(error)))
                 }
                 continue
             }
 
-            guard let secret = string(["secret", "seed", "key"]) else {
-                rejections.append(.init(source: label, reason: "no secret"))
+            guard let secret = string(["secret", "seed", "key", "secretKey"]) else {
+                rejections.append(.init(source: named(label),
+                                        reason: "no secret"))
                 continue
             }
 
@@ -277,12 +297,15 @@ public enum Importer {
                     period: integer(["period", "timer", "timeStep"]) ?? 30,
                     kindName: (string(["type", "tokenType", "kind"]) ?? "totp").lowercased(),
                     counter: nonNegative(integer(["counter"])))
-                candidates.append(.init(issuer: string(["issuer", "service", "issuerName",
-                                                        "originalIssuerName"]),
+                candidates.append(.init(issuer: string(["issuer", "issuerName",
+                                                        "originalIssuerName", "service",
+                                                        "serviceName", "provider", "site",
+                                                        "title"]),
                                         account: label,
                                         authenticator: authenticator))
             } catch {
-                rejections.append(.init(source: label, reason: describe(error)))
+                rejections.append(.init(source: named(label),
+                                        reason: describe(error)))
             }
         }
         return ImportStaging(candidates: candidates, rejections: rejections)
@@ -332,6 +355,14 @@ public enum Importer {
 
         return Authenticator(secret: normalised, algorithm: parsedAlgorithm,
                              digits: digits, period: period, kind: kind)
+    }
+
+    /// What to call an entry in a message about it when the export named it
+    /// nothing. Better than a blank, and better than inventing a name that
+    /// would read like one the file supplied.
+    private static func named(_ name: String) -> String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            ? "an unnamed entry" : name
     }
 
     private static func describe(_ error: any Error) -> String {
