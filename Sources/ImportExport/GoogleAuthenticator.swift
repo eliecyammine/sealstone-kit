@@ -73,8 +73,16 @@ public enum GoogleAuthenticatorMigration {
         }
 
         mutating func lengthDelimited() throws -> [UInt8] {
-            let length = Int(try varint())
-            guard length >= 0, offset + length <= bytes.count else {
+            // Converted with `exactly` and checked before it is used as a
+            // length. A crafted QR can claim a field of 2^63 bytes, which is a
+            // valid varint and not a valid Int: converting it directly traps
+            // before the bounds check below ever runs, so a malicious code
+            // would kill the scanner rather than be rejected by it.
+            //
+            // The remaining space is subtracted rather than added to, because
+            // `offset + length` can overflow on its way to being compared.
+            guard let length = Int(exactly: try varint()), length >= 0,
+                  length <= bytes.count - offset else {
                 throw Failure.malformedPayload("a field claims more bytes than the payload holds")
             }
             let slice = Array(bytes[offset..<(offset + length)])

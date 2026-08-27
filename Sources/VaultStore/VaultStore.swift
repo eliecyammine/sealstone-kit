@@ -24,7 +24,10 @@ public actor VaultStore {
     }
 
     private let location: URL
-    private let fileManager: FileManager
+    /// Read-only after init and safe to consult from any executor, which is
+    /// what lets `exists` answer synchronously. FileManager documents its
+    /// queries as thread-safe.
+    nonisolated(unsafe) private let fileManager: FileManager
 
     public init(location: URL, fileManager: FileManager = .default) {
         self.location = location
@@ -33,7 +36,14 @@ public actor VaultStore {
 
     public var url: URL { location }
 
-    public var exists: Bool {
+    /// Whether the vault file is present, answerable without entering the
+    /// actor and without a key.
+    ///
+    /// Nonisolated deliberately: the session's state resolver runs before the
+    /// first frame is composed, and whether anything exists to open is exactly
+    /// the question it must settle first. Reading a directory entry touches
+    /// no mutable state.
+    public nonisolated var exists: Bool {
         fileManager.fileExists(atPath: location.path)
     }
 
@@ -138,6 +148,11 @@ public actor VaultStore {
         iterations: Int = Impression.defaultIterations,
         parallelism: Int = Impression.defaultParallelism
     ) throws {
+        // Checked before sealing, for the same reason writing is. A backup
+        // that cannot be restored is worse than no backup: it is a promise
+        // that only fails on the day it is needed.
+        try validate(document)
+
         let sealed = try Impression.seal(
             try encode(document),
             using: .passphrase(passphrase),

@@ -92,6 +92,17 @@ extension Item {
 
 /// A one-time password credential.
 public struct Authenticator: Sendable, Hashable {
+    /// How many characters a code of a given kind has.
+    ///
+    /// Steam is always five, and everything else is six to ten. This existed
+    /// three times over, written slightly differently each time, and the three
+    /// disagreed: a Steam credential written out as a URI could not be read
+    /// back, because the writer emitted five digits and the reader allowed
+    /// only six upwards. One copy means that cannot happen again.
+    public static func permittedDigits(forOTPType type: String) -> ClosedRange<Int> {
+        type.lowercased() == "steam" ? 5...5 : 6...10
+    }
+
     public var secret: String          // Base32, RFC 4648
     public var algorithm: Algorithm
     public var digits: Int

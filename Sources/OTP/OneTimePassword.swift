@@ -38,9 +38,23 @@ public enum OneTimePassword {
     ) throws -> String {
         guard period >= 1 else { throw OTPError.periodOutOfRange(period) }
 
-        let counter = UInt64(floor(date.timeIntervalSince1970 / Double(period)))
+        let counter = Self.window(at: date, period: period)
         return try hotp(secret: secret, counter: counter,
                         digits: digits, algorithm: algorithm)
+    }
+
+    /// Which time window a date falls in.
+    ///
+    /// Clamped at the epoch. `UInt64` cannot hold a negative number and traps
+    /// on the attempt, so a device whose clock is set before 1970 would crash
+    /// on every code it drew. It is reachable without a strange clock too: the
+    /// previous-window code subtracts a period, so a clock near the epoch
+    /// arrives here negative on its own.
+    ///
+    /// Window zero is the honest answer for a date before time started, and no
+    /// answer is worth a crash in the app somebody opens to get back in.
+    static func window(at date: Date, period: Int) -> UInt64 {
+        UInt64(floor(max(0, date.timeIntervalSince1970) / Double(period)))
     }
 
     /// A Steam Guard code: five characters from a 26-symbol alphabet.
@@ -52,7 +66,7 @@ public enum OneTimePassword {
         at date: Date = Date(),
         period: Int = 30
     ) -> String {
-        let counter = UInt64(floor(date.timeIntervalSince1970 / Double(period)))
+        let counter = Self.window(at: date, period: period)
         var value = truncate(mac(secret: secret, counter: counter, algorithm: .sha1))
 
         var code = ""

@@ -85,7 +85,11 @@ public struct ImportStaging: Sendable {
 
         for index in candidates.indices {
             let candidate = candidates[index]
-            let key = duplicateKey(service: candidate.issuer ?? "",
+            // The same service name this candidate would be filed under if it
+            // were added. Keying an issuer-less candidate on "" meant it never
+            // matched the account it was about to land on, so the one kind of
+            // duplicate hardest to spot by eye was the one never reported.
+            let key = duplicateKey(service: candidate.issuer ?? candidate.account,
                                    identifier: candidate.account,
                                    secret: candidate.authenticator.secret)
             if let itemId = existing[key] {
@@ -99,8 +103,11 @@ public struct ImportStaging: Sendable {
         candidates[index].resolution = resolution
     }
 
+    /// Built from the document's own rule for what counts as the same account,
+    /// plus the secret. Writing the name comparison a second time here is how
+    /// it drifted from the first one.
     private func duplicateKey(service: String, identifier: String, secret: String) -> String {
-        "\(service.lowercased())\u{0}\(identifier.lowercased())\u{0}\(secret.uppercased())"
+        "\(Account.matchKey(service: service, identifier: identifier))\u{0}\(secret.uppercased())"
     }
 
     /// Applies the staged changes to a copy of `document`.

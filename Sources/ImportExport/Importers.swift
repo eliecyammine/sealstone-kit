@@ -312,14 +312,8 @@ public enum Importer {
         guard let parsedAlgorithm = Authenticator.Algorithm(rawValue: algorithm) else {
             throw OTPAuthURI.Failure.invalidParameter("algorithm", algorithm)
         }
-        if kindName == "steam" {
-            guard digits == 5 else {
-                throw OTPAuthURI.Failure.invalidParameter("digits", String(digits))
-            }
-        } else {
-            guard (6...10).contains(digits) else {
-                throw OTPAuthURI.Failure.invalidParameter("digits", String(digits))
-            }
+        guard Authenticator.permittedDigits(forOTPType: kindName).contains(digits) else {
+            throw OTPAuthURI.Failure.invalidParameter("digits", String(digits))
         }
         guard (1...300).contains(period) else {
             throw OTPAuthURI.Failure.invalidParameter("period", String(period))

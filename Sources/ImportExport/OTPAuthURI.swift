@@ -84,7 +84,11 @@ public enum OTPAuthURI {
 
         let digits: Int
         if let text = query["digits"] {
-            guard let value = Int(text), (6...10).contains(value) else {
+            // Checked against what this kind allows, not against one range for
+            // everything. A Steam URI carries five, which the old rule refused
+            // even though this parser is the thing that wrote it.
+            guard let value = Int(text),
+                  Authenticator.permittedDigits(forOTPType: kindName).contains(value) else {
                 throw Failure.invalidParameter("digits", text)
             }
             digits = value

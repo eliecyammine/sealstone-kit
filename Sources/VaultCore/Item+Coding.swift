@@ -90,6 +90,20 @@ extension Item: Codable {
         for key in Key.common.union(Key.owned(by: type)) {
             leftover.removeValue(forKey: key)
         }
+
+        // A known key holding an unexpected type is kept rather than dropped.
+        //
+        // `favorite` and `ordering` fall back to a default when they are not
+        // the type this version expects, and removing them above would throw
+        // the original away. If a later version widens either of these, an
+        // older build would silently destroy the new value on the first save.
+        // Preserving it costs nothing and is what the format promises.
+        if raw[Key.favorite] != nil, raw[Key.favorite]?.boolValue == nil {
+            leftover[Key.favorite] = raw[Key.favorite]
+        }
+        if raw[Key.ordering] != nil, raw[Key.ordering]?.intValue == nil {
+            leftover[Key.ordering] = raw[Key.ordering]
+        }
         // An unknown type owns every field it brought with it.
         if case .unknown = payload {
             leftover = [:]
