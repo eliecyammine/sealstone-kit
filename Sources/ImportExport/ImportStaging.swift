@@ -16,6 +16,14 @@ public struct ImportStaging: Sendable {
         public let authenticator: Authenticator
         public var resolution: Resolution
 
+        /// The item in the vault this one duplicates, if any.
+        ///
+        /// Separate from `resolution` because it is a fact rather than a
+        /// choice. It used to live inside `.replace`, which meant choosing
+        /// Skip destroyed the only record of what would have been replaced,
+        /// and choosing Replace afterwards silently did nothing.
+        public internal(set) var duplicateOf: String?
+
         public init(issuer: String?, account: String,
                     authenticator: Authenticator,
                     resolution: Resolution = .add) {
@@ -27,7 +35,26 @@ public struct ImportStaging: Sendable {
         }
 
         public var label: String {
-            issuer.map { "\($0) (\(account))" } ?? account
+            let issuer = self.issuer?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let account = self.account.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            switch (issuer.isEmpty, account.isEmpty) {
+            case (false, false): return "\(issuer) (\(account))"
+            case (false, true): return issuer
+            case (true, false): return account
+            case (true, true): return "Unnamed"
+            }
+        }
+
+        /// Whether the export gave this nothing to be called.
+        ///
+        /// Worth saying out loud on the review screen. An import is the one
+        /// moment the file is still in front of the user, so a row that
+        /// arrived nameless is a row they can still go and identify. Once it
+        /// is in the vault it is a secret with nothing attached to it.
+        public var isUnnamed: Bool {
+            (issuer ?? "").trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                && account.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         }
     }
 
@@ -64,8 +91,12 @@ public struct ImportStaging: Sendable {
         candidates.filter { if case .add = $0.resolution { true } else { false } }
     }
 
+    /// Candidates that already exist in the vault.
+    ///
+    /// Decided by what they are, not by what the user has chosen to do with
+    /// them, so a duplicate stays in this list after being set to Skip.
     public var duplicates: [Candidate] {
-        candidates.filter { if case .add = $0.resolution { false } else { true } }
+        candidates.filter { $0.duplicateOf != nil }
     }
 
     /// Marks candidates that already exist in `document`.
@@ -85,10 +116,15 @@ public struct ImportStaging: Sendable {
 
         for index in candidates.indices {
             let candidate = candidates[index]
-            let key = duplicateKey(service: candidate.issuer ?? "",
+            // The same service name this candidate would be filed under if it
+            // were added. Keying an issuer-less candidate on "" meant it never
+            // matched the account it was about to land on, so the one kind of
+            // duplicate hardest to spot by eye was the one never reported.
+            let key = duplicateKey(service: candidate.issuer ?? candidate.account,
                                    identifier: candidate.account,
                                    secret: candidate.authenticator.secret)
             if let itemId = existing[key] {
+                candidates[index].duplicateOf = itemId
                 candidates[index].resolution = .replace(existingItemId: itemId)
             }
         }
@@ -99,8 +135,11 @@ public struct ImportStaging: Sendable {
         candidates[index].resolution = resolution
     }
 
+    /// Built from the document's own rule for what counts as the same account,
+    /// plus the secret. Writing the name comparison a second time here is how
+    /// it drifted from the first one.
     private func duplicateKey(service: String, identifier: String, secret: String) -> String {
-        "\(service.lowercased())\u{0}\(identifier.lowercased())\u{0}\(secret.uppercased())"
+        "\(Account.matchKey(service: service, identifier: identifier))\u{0}\(secret.uppercased())"
     }
 
     /// Applies the staged changes to a copy of `document`.

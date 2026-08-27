@@ -38,6 +38,27 @@ public struct Account: Sendable, Hashable, Identifiable {
     }
 }
 
+extension Account {
+    /// The form two names are compared in to decide whether they mean the same
+    /// account.
+    ///
+    /// A single function rather than a comparison in one place and a
+    /// dictionary key in another. Those two existed and disagreed: one folded
+    /// case the way the user's language does, the other lowercased bytes, so
+    /// importing and adding by hand could reach different answers in languages
+    /// where those differ.
+    ///
+    /// Locale-aware, because these are names people typed or a service
+    /// exported, not identifiers.
+    public static func matchKey(service: String, identifier: String) -> String {
+        let fold = { (text: String) in
+            text.trimmingCharacters(in: .whitespacesAndNewlines)
+                .folding(options: .caseInsensitive, locale: .current)
+        }
+        return "\(fold(service))\u{0}\(fold(identifier))"
+    }
+}
+
 /// "This account can be used to recover that one." The edges of the recovery
 /// graph, and the reason accounts and items are modelled separately.
 public struct Link: Sendable, Hashable, Identifiable {
@@ -188,9 +209,9 @@ extension VaultDocument {
     /// languages such as Turkish wrong.
     public mutating func accountId(forService service: String,
                                    identifier: String) -> String {
+        let wanted = Account.matchKey(service: service, identifier: identifier)
         if let existing = accounts.first(where: {
-            $0.service.caseInsensitiveCompare(service) == .orderedSame
-                && $0.identifier.caseInsensitiveCompare(identifier) == .orderedSame
+            Account.matchKey(service: $0.service, identifier: $0.identifier) == wanted
         }) {
             return existing.id
         }

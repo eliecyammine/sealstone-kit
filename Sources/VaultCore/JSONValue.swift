@@ -72,10 +72,14 @@ extension JSONValue {
     }
 
     public var intValue: Int? {
-        if case .number(let value) = self, value == value.rounded() {
-            return Int(value)
-        }
-        return nil
+        guard case .number(let value) = self else { return nil }
+
+        // `Int(exactly:)` rather than a rounded check and a conversion. JSON
+        // numbers are Doubles, and a hostile file can carry 1e300: that is a
+        // whole number, so a rounded check waves it through, and converting it
+        // then traps. This module refuses bad input rather than dying on it,
+        // and a number too large to be an Int is simply not an Int.
+        return Int(exactly: value)
     }
 
     public var boolValue: Bool? {

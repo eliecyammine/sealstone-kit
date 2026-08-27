@@ -62,6 +62,7 @@ extension Item {
         case securityQuestions([SecurityQuestion])
         case seedPhrase(SeedPhrase)
         case hardwareKey(HardwareKey)
+        case password(Password)
         case note(Note)
 
         /// A type introduced after this version was built.
@@ -75,6 +76,7 @@ extension Item {
             case .securityQuestions: "securityQuestions"
             case .seedPhrase: "seedPhrase"
             case .hardwareKey: "hardwareKey"
+            case .password: "password"
             case .note: "note"
             case .unknown(let type, _): type
             }
@@ -92,6 +94,17 @@ extension Item {
 
 /// A one-time password credential.
 public struct Authenticator: Sendable, Hashable {
+    /// How many characters a code of a given kind has.
+    ///
+    /// Steam is always five, and everything else is six to ten. This existed
+    /// three times over, written slightly differently each time, and the three
+    /// disagreed: a Steam credential written out as a URI could not be read
+    /// back, because the writer emitted five digits and the reader allowed
+    /// only six upwards. One copy means that cannot happen again.
+    public static func permittedDigits(forOTPType type: String) -> ClosedRange<Int> {
+        type.lowercased() == "steam" ? 5...5 : 6...10
+    }
+
     public var secret: String          // Base32, RFC 4648
     public var algorithm: Algorithm
     public var digits: Int
@@ -195,6 +208,33 @@ public struct HardwareKey: Sendable, Hashable, Codable {
         self.label = label
         self.serial = serial
         self.keyType = keyType
+    }
+}
+
+/// A password, and where it is used.
+///
+/// The vault holds seed phrases and security questions already, which are the
+/// same kind of secret with the same consequences, so a password is not a new
+/// category of risk. It is here because "the things that get you back in"
+/// plainly includes it, and because a recovery story that stops short of the
+/// password is a recovery story with a hole in the middle.
+///
+/// `username` rather than an account identifier: the account this belongs to
+/// already carries who you are. This is the login as the site asks for it,
+/// which is not always the same string.
+public struct Password: Sendable, Hashable, Codable {
+    public var password: String
+    public var username: String?
+    /// Where it is used, as the user would recognise it.
+    public var site: String?
+    public var note: String?
+
+    public init(password: String, username: String? = nil,
+                site: String? = nil, note: String? = nil) {
+        self.password = password
+        self.username = username
+        self.site = site
+        self.note = note
     }
 }
 

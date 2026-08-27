@@ -47,7 +47,12 @@ swift package clean
 swift build >/dev/null || fail "build"
 ok "builds"
 
+# The same environment CI uses. Without this the Argon2 vectors and the
+# conformance corpus run at cheap parameters here and at shipping ones there,
+# which is the difference between a green local run and a red push.
+export SEALSTONE_SLOW_TESTS=1
+
 swift test >/dev/null 2>&1 || { swift test 2>&1 | grep -E 'error:|failed' | head -20; fail "tests"; }
-ok "tests pass"
+ok "tests pass, at shipping parameters"
 
 printf "\n${GREEN}Everything CI runs passes here. Safe to push.${OFF}\n"

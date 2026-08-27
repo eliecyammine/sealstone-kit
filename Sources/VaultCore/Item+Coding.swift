@@ -33,6 +33,7 @@ extension Item: Codable {
             case "securityQuestions": ["questions"]
             case "seedPhrase": ["words", "wordlist", "passphrase"]
             case "hardwareKey": ["label", "serial", "keyType"]
+            case "password": ["password", "username", "site", "note"]
             case "note": ["title", "body"]
             default: []
             }
@@ -89,6 +90,20 @@ extension Item: Codable {
         var leftover = raw
         for key in Key.common.union(Key.owned(by: type)) {
             leftover.removeValue(forKey: key)
+        }
+
+        // A known key holding an unexpected type is kept rather than dropped.
+        //
+        // `favorite` and `ordering` fall back to a default when they are not
+        // the type this version expects, and removing them above would throw
+        // the original away. If a later version widens either of these, an
+        // older build would silently destroy the new value on the first save.
+        // Preserving it costs nothing and is what the format promises.
+        if raw[Key.favorite] != nil, raw[Key.favorite]?.boolValue == nil {
+            leftover[Key.favorite] = raw[Key.favorite]
+        }
+        if raw[Key.ordering] != nil, raw[Key.ordering]?.intValue == nil {
+            leftover[Key.ordering] = raw[Key.ordering]
         }
         // An unknown type owns every field it brought with it.
         if case .unknown = payload {
@@ -232,6 +247,14 @@ extension Item {
                 keyType: raw["keyType"]?.stringValue
             ))
 
+        case "password":
+            return .password(Password(
+                password: raw["password"]?.stringValue ?? "",
+                username: raw["username"]?.stringValue,
+                site: raw["site"]?.stringValue,
+                note: raw["note"]?.stringValue
+            ))
+
         case "note":
             return .note(Note(
                 title: raw["title"]?.stringValue ?? "",
@@ -288,6 +311,15 @@ extension Item {
             var fields: [String: JSONValue] = ["label": .string(value.label)]
             fields["serial"] = value.serial.map { .string($0) } ?? .null
             fields["keyType"] = value.keyType.map { .string($0) } ?? .null
+            return fields
+
+        case .password(let value):
+            // Absent stays absent rather than becoming an empty string, which
+            // is what every other optional on an item does.
+            var fields: [String: JSONValue] = ["password": .string(value.password)]
+            if let username = value.username { fields["username"] = .string(username) }
+            if let site = value.site { fields["site"] = .string(site) }
+            if let note = value.note { fields["note"] = .string(note) }
             return fields
 
         case .note(let value):
