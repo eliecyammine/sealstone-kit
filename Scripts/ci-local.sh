@@ -58,6 +58,23 @@ for dir in Sources/*; do
 done
 ok "only the open targets are here"
 
+# The target allowlist catches a new target. It does not catch the service
+# knowledge base being dropped into an existing one, which is the easier
+# mistake to make and the more valuable thing to leak: the catalogue is the
+# part that took the longest to assemble and the part a competitor would copy
+# first, and nothing in it is load-bearing for the trust argument.
+leaked=$(find Sources Tests -iname 'services.json' -o -iname 'servicecatalog*' \
+  -o -iname 'serviceknowledge*' 2>/dev/null || true)
+[ -n "$leaked" ] && { echo "$leaked"; fail "the service knowledge base does not belong in the public repository"; }
+
+# And the mechanism it would arrive by. The one legitimate resource here is the
+# conformance corpus, which is a test fixture and is published on purpose: it
+# is how somebody checks their own implementation against this one. A shipping
+# target carrying data is the shape the knowledge base would take.
+bundled=$(grep -n 'resources:' Package.swift | grep -v '\.copy("Vectors")' || true)
+[ -n "$bundled" ] && { echo "$bundled"; fail "a target other than the conformance corpus declares bundled resources — the open targets ship code, not data"; }
+ok "no service knowledge here"
+
 step "Build and test"
 
 # Clean first. Changing a memberwise initialiser rewrites its mangled symbol,
