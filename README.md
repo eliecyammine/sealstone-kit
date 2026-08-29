@@ -10,7 +10,7 @@ should not require trusting us.
 
 | Module | Responsibility |
 |---|---|
-| `VaultCore` | Entities, identifiers, validation, the recovery graph model |
+| `VaultCore` | Entities, identifiers, validation, and the `Link` entity the format defines |
 | `VaultCrypto` | Key derivation, the Impression envelope, Shamir secret sharing |
 | `VaultStore` | Atomic persistence, backups, restore |
 | `OTP` | TOTP, HOTP and Steam codes |

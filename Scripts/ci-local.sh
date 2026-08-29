@@ -38,6 +38,26 @@ ok "every target has sources"
   || fail "the vector corpus is missing — run Scripts/sync-vectors.sh"
 ok "corpus present ($(find Tests/ConformanceTests/Vectors -type f | wc -l | tr -d ' ') files)"
 
+# This repository is public, and what is open is exactly what somebody needs in
+# order to verify the trust claims and decode their own data. The Map engine,
+# the service knowledge base, the applications and the relay are the business
+# and stay closed.
+#
+# That rule was written down and broken anyway: a RecoveryMap target was added
+# here, and it was the whole of layer 2. Nothing caught it, because nothing was
+# looking. A new target is now a deliberate act — add it below, having decided
+# that a stranger reading it learns nothing but how to open their own file.
+OPEN_TARGETS="VaultCore VaultCrypto VaultStore OTP ImportExport"
+for dir in Sources/*; do
+  [ -d "$dir" ] || continue
+  name=$(basename "$dir")
+  case " $OPEN_TARGETS " in
+    *" $name "*) ;;
+    *) fail "$name is not on the list of targets this public repository may hold. If it belongs here, add it to OPEN_TARGETS and say why in the commit; if it is product logic, it belongs in the private repository." ;;
+  esac
+done
+ok "only the open targets are here"
+
 step "Build and test"
 
 # Clean first. Changing a memberwise initialiser rewrites its mangled symbol,
