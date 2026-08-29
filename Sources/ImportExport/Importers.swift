@@ -112,7 +112,7 @@ public enum Importer {
                                         account: parsed.account,
                                         authenticator: parsed.authenticator))
             } catch {
-                rejections.append(.init(source: String(trimmed.prefix(60)),
+                rejections.append(.init(source: describeURI(trimmed),
                                         reason: describe(error)))
             }
         }
@@ -187,9 +187,14 @@ public enum Importer {
                     period: otp["period"] as? Int ?? 30,
                     kindName: (otp["tokenType"] as? String ?? "totp").lowercased(),
                     counter: nonNegative(otp["counter"] as? Int))
+                // 2FAS puts the service in `name` and, when it has one, the
+                // login in `otp.account`. Falling back to `name` for the
+                // account put the service on both halves, so every row read
+                // "GitHub (GitHub)". An entry with no login has no login;
+                // repeating the service does not supply one.
                 candidates.append(.init(issuer: otp["issuer"] as? String
                                             ?? (name.isEmpty ? nil : name),
-                                        account: otp["account"] as? String ?? name,
+                                        account: otp["account"] as? String ?? "",
                                         authenticator: authenticator))
             } catch {
                 rejections.append(.init(source: named(name), reason: describe(error)))
@@ -312,6 +317,29 @@ public enum Importer {
     }
 
     // MARK: - Shared
+
+    /// Names a URI that would not parse, without repeating what it carried.
+    ///
+    /// The first sixty characters used to go on the review screen verbatim.
+    /// `otpauth://totp/x?secret=...` puts the secret inside them, so a line
+    /// that failed for an unrelated reason printed a working credential onto a
+    /// screen, into a screenshot, and into whatever the person sent to ask
+    /// what went wrong. The label identifies the row; the query never does.
+    private static func describeURI(_ text: String) -> String {
+        // The scheme is required, not assumed. A line with no scheme is a
+        // valid relative reference whose path is the entire line, so without
+        // this check a stray line is quoted back in full and the quoting is
+        // the thing being fixed.
+        guard let components = URLComponents(string: text),
+              components.scheme?.lowercased() == "otpauth" else {
+            return "an entry that is not a link"
+        }
+        let path = components.path.hasPrefix("/")
+            ? String(components.path.dropFirst()) : components.path
+        let label = (path.removingPercentEncoding ?? path)
+            .trimmingCharacters(in: .whitespaces)
+        return label.isEmpty ? "an unnamed entry" : String(label.prefix(60))
+    }
 
     /// Counters below zero are not representable and must not be converted.
     /// A hand-edited export with `"counter": -1` is a rejection row, not a trap.

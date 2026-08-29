@@ -8,6 +8,9 @@ public enum VaultValidator {
     public static let maxAccounts = 100_000
     public static let maxItems = 500_000
     public static let maxLinks = 1_000_000
+    /// The ceiling on any single string, in bytes. A megabyte is far past any
+    /// real value and well short of what makes a document a weapon.
+    public static let maxStringBytes = 1024 * 1024
 
     public static func validate(_ document: VaultDocument) throws {
         guard document.formatVersion == VaultDocument.currentFormatVersion else {
@@ -43,8 +46,34 @@ public enum VaultValidator {
             }
         }
 
-        for (item, authenticator) in document.authenticators {
-            try validate(authenticator, itemId: item.id)
+        for item in document.items {
+            switch item.payload {
+            case .authenticator(let authenticator):
+                try validate(authenticator, itemId: item.id)
+            case .password(let password):
+                try validate(password, itemId: item.id)
+            default:
+                break
+            }
+        }
+    }
+
+    /// A password item with no password.
+    ///
+    /// The specification says only `password` is required of this type, and
+    /// nothing checked it, so an item could be stored, listed and counted
+    /// while carrying nothing at all. A recovery vault holding an empty
+    /// password is worse than one holding none: it says the credential is
+    /// here, and it is not.
+    private static func validate(_ password: Password, itemId: String) throws {
+        guard !password.password.isEmpty else {
+            throw VaultError.invalidField("password", in: "item \(itemId)",
+                                          reason: "must not be empty")
+        }
+        guard password.password.utf8.count <= maxStringBytes else {
+            throw VaultError.invalidField(
+                "password", in: "item \(itemId)",
+                reason: "must be at most \(maxStringBytes / 1024) KiB")
         }
     }
 

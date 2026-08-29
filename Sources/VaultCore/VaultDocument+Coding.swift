@@ -28,10 +28,15 @@ extension VaultDocument: Codable {
             vaultId: try container.decode(String.self, forKey: .vaultId),
             createdAt: try container.decode(Timestamp.self, forKey: .createdAt),
             updatedAt: try container.decode(Timestamp.self, forKey: .updatedAt),
-            accounts: try container.decode([Account].self, forKey: .accounts),
-            items: try container.decode([Item].self, forKey: .items),
-            links: try container.decode([Link].self, forKey: .links),
-            keepers: try container.decode([Keeper].self, forKey: .keepers),
+            // An absent array and an empty one mean the same thing, so both
+            // are accepted and the empty one is written. A file from another
+            // implementation that leaves out a collection it has nothing for
+            // is a valid file, and refusing it would make this the reason
+            // somebody could not open their own vault elsewhere.
+            accounts: try container.decodeIfPresent([Account].self, forKey: .accounts) ?? [],
+            items: try container.decodeIfPresent([Item].self, forKey: .items) ?? [],
+            links: try container.decodeIfPresent([Link].self, forKey: .links) ?? [],
+            keepers: try container.decodeIfPresent([Keeper].self, forKey: .keepers) ?? [],
             unrecognised: try UnknownKeys.read(from: decoder, known: Self.known)
         )
 
@@ -68,7 +73,12 @@ extension Account: Codable {
         self.init(
             id: try container.decode(String.self, forKey: .id),
             service: try container.decode(String.self, forKey: .service),
-            identifier: try container.decode(String.self, forKey: .identifier),
+            // Optional: not every account has one. A service with a single
+            // login per person has nothing to put here, and requiring it is
+            // how vaults fill with accounts called "default". Absent is
+            // carried as empty, which is what the rest of this type means by
+            // "no identifier".
+            identifier: try container.decodeIfPresent(String.self, forKey: .identifier) ?? "",
             domain: try container.decodeIfPresent(String.self, forKey: .domain),
             tags: try container.decodeIfPresent([String].self, forKey: .tags) ?? [],
             notes: try container.decodeIfPresent(String.self, forKey: .notes),

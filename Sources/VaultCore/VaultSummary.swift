@@ -41,16 +41,6 @@ extension VaultDocument {
     /// nothing stored are omitted, so `itemCounts` holds exactly what is here.
     /// Use `totalItems` when the question is "how much is in this vault".
     public var summary: VaultSummary {
-        let knownOrder = [
-            "authenticator",
-            "recoveryCodes",
-            "recoveryContact",
-            "securityQuestions",
-            "seedPhrase",
-            "hardwareKey",
-            "note",
-        ]
-
         var tally: [String: Tally] = [:]
         for item in items {
             let typeName = item.payload.typeName
@@ -64,7 +54,7 @@ extension VaultDocument {
             tally[typeName] = entry
         }
 
-        let knownRows: [ItemTypeCount] = knownOrder.compactMap { typeName in
+        let knownRows: [ItemTypeCount] = Item.Payload.knownTypeNames.compactMap { typeName in
             guard let entry = tally[typeName], entry.known else { return nil }
             return ItemTypeCount(typeName: typeName, count: entry.count, isKnown: entry.known)
         }

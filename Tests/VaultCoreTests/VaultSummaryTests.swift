@@ -38,6 +38,46 @@ final class VaultSummaryTests: XCTestCase {
         XCTAssertEqual(summary.accounts, 1)
     }
 
+    /// Every kind the vault can hold has to appear in the counts.
+    ///
+    /// The summary used to carry its own list of type names. `password` was
+    /// added to the payload and not to that list, so password items were
+    /// counted in `totalItems` and in no row, and the two numbers on the
+    /// screen disagreed with each other. Nothing failed, because every test
+    /// named the types it was checking.
+    ///
+    /// This one names none of them. It stores one item of every kind and
+    /// requires the rows and the total to agree, so a kind added later without
+    /// being counted fails here rather than on somebody's screen.
+    func testEveryKnownTypeIsCounted() {
+        let everyKind: [Item.Payload] = [
+            .authenticator(Authenticator(secret: "JBSWY3DPEHPK3PXP")),
+            .recoveryCodes([RecoveryCode(code: "AA-BB-CC")]),
+            .recoveryContact(RecoveryContact(channel: .email, value: "me@example.com")),
+            .securityQuestions([SecurityQuestion(question: "Street?", answer: "Mill")]),
+            .seedPhrase(SeedPhrase(words: ["alpha", "bravo"])),
+            .hardwareKey(HardwareKey(label: "Blue key", serial: "123", keyType: "YubiKey 5")),
+            .password(Password(password: "correct horse")),
+            .note(Note(title: "Title", body: "Body")),
+        ]
+
+        XCTAssertEqual(everyKind.map(\.typeName), Item.Payload.knownTypeNames,
+                       "a payload case is missing from this test or from knownTypeNames")
+
+        let document = VaultDocument(
+            accounts: [Account(id: "a1", service: "S", identifier: "i")],
+            items: everyKind.enumerated().map { index, payload in
+                Item(id: "\(index)", accountId: "a1", payload: payload)
+            })
+
+        let summary = document.summary
+        XCTAssertEqual(summary.itemCounts.map(\.typeName), Item.Payload.knownTypeNames)
+        XCTAssertEqual(summary.itemCounts.map(\.count), Array(repeating: 1, count: everyKind.count))
+        XCTAssertTrue(summary.itemCounts.allSatisfy(\.isKnown))
+        XCTAssertEqual(summary.totalItems, everyKind.count)
+        XCTAssertEqual(summary.itemCounts.reduce(0) { $0 + $1.count }, summary.totalItems)
+    }
+
     func testZeroCountRowsAreOmitted() {
         let document = VaultDocument(
             accounts: [Account(id: "a1", service: "S", identifier: "i")],
