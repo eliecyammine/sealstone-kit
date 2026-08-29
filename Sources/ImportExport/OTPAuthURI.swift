@@ -25,6 +25,23 @@ public enum OTPAuthURI {
         case missingCounter
     }
 
+    /// Percent-encoding for one half of a label.
+    ///
+    /// `urlPathAllowed` permits a colon, which is the one character that must
+    /// not survive: it is the separator. Everything else keeps its own
+    /// encoding rules so a name is not mangled on the way out.
+    private static func escape(_ text: String) -> String {
+        let allowed = CharacterSet.urlPathAllowed.subtracting(CharacterSet(charactersIn: ":"))
+        return text.addingPercentEncoding(withAllowedCharacters: allowed) ?? text
+    }
+
+    /// The inverse. A half that will not decode is kept as it arrived rather
+    /// than dropped, because a name that looks wrong is recoverable and a
+    /// credential with no name is not.
+    private static func decode(_ text: String) -> String {
+        text.removingPercentEncoding ?? text
+    }
+
     public static func parse(_ text: String) throws -> Parsed {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -39,15 +56,22 @@ public enum OTPAuthURI {
         }
 
         // The label is "Issuer:account" or just "account".
-        let label = components.path.hasPrefix("/")
-            ? String(components.path.dropFirst())
-            : components.path
+        //
+        // Split before decoding, not after. A colon is legal inside an account
+        // name — "user:admin" is a real login shape — and the encoded form
+        // says which colon is the separator: a literal `:` divides the halves,
+        // an escaped `%3A` is part of a name. Splitting the decoded string
+        // cannot tell them apart, so `user:admin` came back as the issuer
+        // "user" with the account "admin".
+        let encoded = components.percentEncodedPath
+        let label = encoded.hasPrefix("/") ? String(encoded.dropFirst()) : encoded
         var issuer: String?
-        var account = label
+        var account = decode(label)
 
         if let separator = label.firstIndex(of: ":") {
-            issuer = String(label[..<separator]).trimmingCharacters(in: .whitespaces)
-            account = String(label[label.index(after: separator)...])
+            issuer = decode(String(label[..<separator]))
+                .trimmingCharacters(in: .whitespaces)
+            account = decode(String(label[label.index(after: separator)...]))
                 .trimmingCharacters(in: .whitespaces)
         }
 
@@ -139,8 +163,13 @@ public enum OTPAuthURI {
         components.scheme = "otpauth"
         components.host = parsed.authenticator.kind.name
 
-        let label = parsed.issuer.map { "\($0):\(parsed.account)" } ?? parsed.account
-        components.path = "/\(label)"
+        // Each half is escaped before the separator is put between them, so
+        // the only bare colon in the label is the one that divides them. An
+        // account called "user:admin" written plainly reads back as the issuer
+        // "user", which turns exporting and re-importing into a rename.
+        let label = parsed.issuer.map { "\(escape($0)):\(escape(parsed.account))" }
+            ?? escape(parsed.account)
+        components.percentEncodedPath = "/\(label)"
 
         var items = [URLQueryItem(name: "secret", value: parsed.authenticator.secret)]
         if let issuer = parsed.issuer {

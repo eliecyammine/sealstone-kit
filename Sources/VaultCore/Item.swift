@@ -87,6 +87,26 @@ extension Item {
             if case .unknown = self { return false }
             return true
         }
+
+        /// Every type name this version understands, in the order the cases
+        /// are declared above.
+        ///
+        /// Here rather than wherever a list of types is needed, because a
+        /// second copy is a copy that goes stale. One did: the summary carried
+        /// its own list, `password` was added to the enum and not to the list,
+        /// and password items stopped being counted while still contributing
+        /// to the total. Anything that needs the set of known types reads it
+        /// from here.
+        public static let knownTypeNames = [
+            "authenticator",
+            "recoveryCodes",
+            "recoveryContact",
+            "securityQuestions",
+            "seedPhrase",
+            "hardwareKey",
+            "password",
+            "note",
+        ]
     }
 }
 
