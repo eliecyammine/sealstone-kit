@@ -51,10 +51,34 @@ final class ConformanceTests: XCTestCase {
 
     // MARK: - Corpus integrity
 
-    func testCorpusIsPresentAndCurrent() {
+    /// Every kind the corpus declares is consumed by a test in this file.
+    ///
+    /// This replaces a check that the corpus held at least nine families, which
+    /// is the kind of floor that passes forever. A twelfth family was added in
+    /// sealstone-format, never synced here, and nothing noticed: the count was
+    /// still above the floor, `formatVersion` had not moved, and the loop that
+    /// would have run those vectors simply iterated over nothing. A test with
+    /// no data passes.
+    ///
+    /// So the assertion is against the corpus rather than against a number. Add
+    /// a family with a new kind and this fails until something reads it.
+    func testEveryKindInTheCorpusIsRead() {
+        let handled: Set<String> = [
+            "open-succeeds", "open-fails", "reject-before-allocation",
+            "shamir", "versions", "identifiers",
+        ]
+        let declared = Set(families.compactMap { $0["kind"] as? String })
+        let unread = declared.subtracting(handled).sorted()
+
         XCTAssertEqual(manifest["formatVersion"] as? Int, 1)
-        XCTAssertGreaterThanOrEqual(families.count, 9,
-            "the corpus looks incomplete — run Scripts/sync-vectors.sh")
+        XCTAssertTrue(unread.isEmpty,
+            "the corpus declares kinds nothing here reads: \(unread.joined(separator: ", ")). "
+            + "Either read them or say why they are skipped.")
+
+        for kind in handled where kind != "identifiers" || declared.contains("identifiers") {
+            XCTAssertFalse(families(ofKind: kind).isEmpty,
+                "no family of kind \(kind) — run Scripts/sync-vectors.sh")
+        }
     }
 
     // MARK: - Files that must open
@@ -261,6 +285,41 @@ final class ConformanceTests: XCTestCase {
         XCTAssertEqual(maximum("kdfMemoryKiB"), Impression.maxMemoryKiB)
         XCTAssertEqual(maximum("kdfIterations"), Impression.maxIterations)
         XCTAssertEqual(maximum("kdfParallelism"), Impression.maxParallelism)
+    }
+
+    // MARK: - Identifiers
+
+    /// The identifiers a keeper retypes.
+    ///
+    /// The body is read leniently and the kind is not, and both halves matter:
+    /// a person copying from paper writes an O for a zero and an I for a one,
+    /// and a kind matched loosely would let one thing have two names.
+    func testIdentifierVectors() throws {
+        for family in families(ofKind: "identifiers") {
+            XCTAssertEqual(family["bodyLength"] as? Int, SealstoneID.bodyLength)
+
+            for entry in family["valid"] as! [[String: Any]] {
+                let id = entry["id"] as! String
+                let parsed = SealstoneID.parse(id)
+                XCTAssertNotNil(parsed, "\(id) should be readable")
+                XCTAssertEqual(parsed?.kind.rawValue, entry["kind"] as? String)
+                XCTAssertEqual(parsed?.canonical, id, "\(id) should already be canonical")
+            }
+
+            for entry in family["mustReject"] as! [[String: Any]] {
+                let id = entry["id"] as! String
+                XCTAssertNil(SealstoneID.parse(id),
+                             "\(id) was read, and should not be: \(entry["reason"] as! String)")
+            }
+
+            for entry in family["mustMatch"] as! [[String: Any]] {
+                let written = entry["written"] as! String
+                let typed = entry["typed"] as! String
+                XCTAssertTrue(SealstoneID.areTheSame(written, typed),
+                              "\(typed) should name the same thing as \(written): "
+                              + (entry["reason"] as! String))
+            }
+        }
     }
 
     // MARK: - Shamir
