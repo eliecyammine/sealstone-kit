@@ -49,6 +49,21 @@ final class ConformanceTests: XCTestCase {
         ProcessInfo.processInfo.environment["SEALSTONE_SLOW_TESTS"] == "1"
     }
 
+    private func bytes(fromHex text: String) -> [UInt8] {
+        var out = [UInt8]()
+        var index = text.startIndex
+        while index < text.endIndex {
+            let next = text.index(index, offsetBy: 2)
+            out.append(UInt8(text[index..<next], radix: 16)!)
+            index = next
+        }
+        return out
+    }
+
+    private func hex(of bytes: [UInt8]) -> String {
+        bytes.map { String(format: "%02x", $0) }.joined()
+    }
+
     // MARK: - Corpus integrity
 
     /// Every kind the corpus declares is consumed by a test in this file.
@@ -65,7 +80,7 @@ final class ConformanceTests: XCTestCase {
     func testEveryKindInTheCorpusIsRead() {
         let handled: Set<String> = [
             "open-succeeds", "open-fails", "reject-before-allocation",
-            "shamir", "versions", "identifiers",
+            "shamir", "versions", "identifiers", "fragments",
         ]
         let declared = Set(families.compactMap { $0["kind"] as? String })
         let unread = declared.subtracting(handled).sorted()
@@ -285,6 +300,48 @@ final class ConformanceTests: XCTestCase {
         XCTAssertEqual(maximum("kdfMemoryKiB"), Impression.maxMemoryKiB)
         XCTAssertEqual(maximum("kdfIterations"), Impression.maxIterations)
         XCTAssertEqual(maximum("kdfParallelism"), Impression.maxParallelism)
+    }
+
+    // MARK: - Fragments
+
+    /// The container a keeper holds, against the same bytes the Python
+    /// implementation is checked against.
+    ///
+    /// Shamir has its own family; this is the wrapper around a share. Two
+    /// readers agreeing matters more here than anywhere: a keeper handed a
+    /// fragment the other reader will not open finds out at the one moment
+    /// there is nobody left to ask.
+    func testFragmentVectors() throws {
+        for family in families(ofKind: "fragments") {
+            let setId = bytes(fromHex: family["setIdHex"] as! String)
+            let share = bytes(fromHex: family["shareHex"] as! String)
+            let index = UInt8(family["index"] as! Int)
+            let threshold = UInt8(family["threshold"] as! Int)
+            let total = UInt8(family["total"] as! Int)
+
+            let built = try Fragment(setId: setId, index: index,
+                                     threshold: threshold, total: total, share: share)
+            XCTAssertEqual(hex(of: built.encoded), family["encodedHex"] as! String,
+                           "the encoded bytes differ from the corpus")
+
+            let read = try Fragment.decode(bytes(fromHex: family["encodedHex"] as! String))
+            XCTAssertEqual(read, built)
+
+            // The sheet the reference implementation prints, read by this one.
+            let fromPaper = try Fragment.fromPaper(family["paper"] as! String)
+            XCTAssertEqual(fromPaper.share, share)
+
+            // And the same sheet as somebody actually types it back.
+            let retyped = try Fragment.fromPaper(family["retyped"] as! String)
+            XCTAssertEqual(retyped.share, share,
+                           "a retyped fragment must still read")
+
+            for entry in family["mustReject"] as! [[String: Any]] {
+                let malformed = bytes(fromHex: entry["hex"] as! String)
+                XCTAssertThrowsError(try Fragment.decode(malformed),
+                                     entry["reason"] as! String)
+            }
+        }
     }
 
     // MARK: - Identifiers
