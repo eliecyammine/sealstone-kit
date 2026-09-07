@@ -7,20 +7,14 @@ on:
     branches: [main, dev]
 
 jobs:
-  test:
-    runs-on: macos-15
+  # Linux, so it bills at the base rate. None of these needs a compiler: they
+  # read the manifest and the source tree, and they are the checks most likely
+  # to catch a mistake, so they should be the cheapest ones to run.
+  checks:
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
-      # Pinned so a runner image update cannot silently change the toolchain,
-      # and pinned to the version development happens on. A gap between the two
-      # hides portability problems until CI finds them one at a time.
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_26.3.app
-
-      - name: Report toolchain
-        run: swift --version
 
       - name: Assert no package dependencies
         run: |
@@ -43,8 +37,8 @@ jobs:
           echo "Core modules are free of UI frameworks."
 
       # Git does not track empty directories, so a target whose sources were
-      # never committed builds locally and fails here. Catch it as a clear
-      # message rather than an SPM path error.
+      # never committed builds locally and fails on the runner. Catch it as a
+      # clear message rather than an SPM path error.
       - name: Assert every declared target has sources
         run: |
           missing=""
@@ -69,9 +63,25 @@ jobs:
           fi
           echo "Corpus present: $(find Tests/ConformanceTests/Vectors -type f | wc -l | tr -d ' ') files."
 
-      - name: Build
-        run: swift build
+  # macOS, because the crypto is built on CryptoKit and there is no other
+  # platform that has it. This job is kept to the compiler work alone.
+  test:
+    runs-on: macos-15
 
+    steps:
+      - uses: actions/checkout@v4
+
+      # Pinned so a runner image update cannot silently change the toolchain,
+      # and pinned to the version development happens on. A gap between the two
+      # hides portability problems until CI finds them one at a time.
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.3.app
+
+      - name: Report toolchain
+        run: swift --version
+
+      # No separate build step. `swift test` builds the library and the test
+      # targets, so building first only compiled the library twice.
       - name: Test
         run: swift test
 
