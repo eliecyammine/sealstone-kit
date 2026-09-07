@@ -89,7 +89,16 @@ ok "builds"
 # which is the difference between a green local run and a red push.
 export SEALSTONE_SLOW_TESTS=1
 
-swift test >/dev/null 2>&1 || { swift test 2>&1 | grep -E 'error:|failed' | head -20; fail "tests"; }
-ok "tests pass, at shipping parameters"
+# Both counts, because this package uses two test frameworks and each reports
+# only its own. Swift Testing's closing line says "27 tests" while more than two
+# hundred XCTest cases ran just above it, which reads as a tiny suite for the
+# package that holds the crypto. Saying both is cheaper than being misread.
+out=$(swift test 2>&1) || { printf "%s\n" "$out" | grep -E 'error:|failed' | head -20; fail "tests"; }
+# The largest, not the first: every suite prints its own "Executed N tests"
+# line and the run total is the last and biggest of them.
+xctest=$(printf "%s\n" "$out" | grep -oE 'Executed [0-9]+ tests' \
+  | grep -oE '[0-9]+' | sort -n | tail -1)
+swifttest=$(printf "%s\n" "$out" | grep -oE 'Test run with [0-9]+ tests' | grep -oE '[0-9]+')
+ok "tests pass, at shipping parameters (${xctest:-0} XCTest, ${swifttest:-0} Swift Testing)"
 
 printf "\n${GREEN}Everything CI runs passes here. Safe to push.${OFF}\n"

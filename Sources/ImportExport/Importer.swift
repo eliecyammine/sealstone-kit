@@ -74,8 +74,51 @@ public enum Importer {
         return .genericJSON
     }
 
+    /// A file we can name but cannot read, and what to do about it.
+    ///
+    /// Every app on the list offers an encrypted or archived export as well as
+    /// a plain one, and those are the shapes somebody reaches for first,
+    /// because they are the ones the other app recommends. Falling through to
+    /// "unrecognised format" tells them their file is wrong when it is fine and
+    /// simply not yet openable here. Aegis already said the useful thing; this
+    /// says it for the rest.
+    public static func unreadable(_ data: Data) -> String? {
+        // A ZIP, whatever produced it. Raivo exports one, and so does anybody
+        // who zipped a folder before sending it to themselves.
+        if data.starts(with: [0x50, 0x4B, 0x03, 0x04]) {
+            return "This is a zip archive. Unzip it and import the file inside."
+        }
+
+        guard let text = String(data: data, encoding: .utf8),
+              let object = try? JSONSerialization.jsonObject(with: Data(text.utf8)),
+              let root = object as? [String: Any]
+        else { return nil }
+
+        // Ente writes the ciphertext under one key and the parameters to
+        // derive its key under another. Neither is anything we can open.
+        if root["encryptedData"] != nil || root["kdfParams"] != nil {
+            return "This Ente Auth export is encrypted. Export it again without "
+                + "a password, or decrypt it first."
+        }
+
+        if root["servicesEncrypted"] != nil {
+            return "This 2FAS backup is encrypted. Export it again without a "
+                + "password, or decrypt it first."
+        }
+
+        return nil
+    }
+
     /// Parses `data` into a staging area. Nothing is applied.
     public static func stage(_ data: Data, as format: Format? = nil) throws -> ImportStaging {
+        // Only when nobody has said what this is. A caller naming a format
+        // has a parser with its own better message: Aegis already tells you to
+        // decrypt in Aegis, and preempting that with something more general
+        // would be a worse answer arriving sooner.
+        if format == nil, let reason = unreadable(data) {
+            throw Failure.malformed(reason)
+        }
+
         guard let resolved = format ?? detect(data) else {
             throw Failure.unrecognisedFormat
         }
@@ -94,17 +137,4 @@ public enum Importer {
             return try stageGeneric(data)
         }
     }
-
-    // MARK: - Formats
-
-
-
-
-
-    // MARK: - Shared
-
-
-
-
-
 }
