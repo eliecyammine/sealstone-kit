@@ -52,6 +52,39 @@ public enum CrockfordBase32 {
         return grouped.joined(separator: " ")
     }
 
+    /// The one spelling a body has, whatever spelling arrived.
+    ///
+    /// Decoding is lenient because somebody retyping from paper writes what
+    /// they see: a letter O for a zero, an I or an l for a one, in whichever
+    /// case the keyboard was in. So two spellings of one identifier cannot be
+    /// compared as text.
+    ///
+    /// Comparing decoded bytes is not the answer either. A body of twenty-six
+    /// characters is a hundred and thirty bits, and decoding keeps sixteen
+    /// whole bytes and drops the last two bits, so two different bodies can
+    /// decode alike. This maps each character to the symbol it means and keeps
+    /// all of them.
+    ///
+    /// Separators are skipped, as they are when decoding. Returns nil for any
+    /// character Crockford does not accept, which is the whole point of U.
+    public static func canonical(_ text: String) -> String? {
+        var canonical = ""
+        canonical.reserveCapacity(text.count)
+
+        for character in text.unicodeScalars {
+            if character == " " || character == "-" || character == "\n"
+                || character == "\r" || character == "\t" {
+                continue
+            }
+            guard character.isASCII, Int(character.value) < 128 else { return nil }
+            let value = decodeTable[Int(character.value)]
+            guard value >= 0 else { return nil }
+            canonical.append(alphabet[Int(value)])
+        }
+
+        return canonical
+    }
+
     public static func decode(_ text: String) throws -> [UInt8] {
         var output: [UInt8] = []
         var buffer = 0
