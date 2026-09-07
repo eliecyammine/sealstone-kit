@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// Coding for `Item`.
 ///

@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// Shamir's Secret Sharing over GF(2^8).
 ///

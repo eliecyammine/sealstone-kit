@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 private import CryptoKit
 private import Security
 

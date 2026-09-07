@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// Checks a decoded document before anything acts on it.
 ///

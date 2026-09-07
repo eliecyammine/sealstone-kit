@@ -1,6 +1,6 @@
-public import Foundation
-public import VaultCore
-public import VaultCrypto
+import Foundation
+import VaultCore
+import VaultCrypto
 
 /// Between a document and the bytes that get sealed.
 ///

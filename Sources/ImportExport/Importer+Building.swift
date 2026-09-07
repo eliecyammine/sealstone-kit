@@ -1,5 +1,5 @@
-public import Foundation
-public import VaultCore
+import Foundation
+import VaultCore
 
 /// Turning what was parsed into something the vault can hold.
 ///

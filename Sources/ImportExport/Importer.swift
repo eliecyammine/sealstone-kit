@@ -1,5 +1,5 @@
 public import Foundation
-public import VaultCore
+import VaultCore
 
 /// Reads the export formats other authenticators produce.
 ///

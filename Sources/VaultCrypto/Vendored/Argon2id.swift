@@ -181,7 +181,7 @@ public enum Argon2id {
         var scratch = [UInt64](repeating: 0, count: blockWords)
         var addressBlock = [UInt64](repeating: 0, count: blockWords)
         var inputBlock = [UInt64](repeating: 0, count: blockWords)
-        var zeroBlock = [UInt64](repeating: 0, count: blockWords)
+        let zeroBlock = [UInt64](repeating: 0, count: blockWords)
 
         for pass in 0..<iterations {
             for slice in 0..<syncPoints {

@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// Arbitrary JSON, used to carry fields this version does not recognise.
 ///
