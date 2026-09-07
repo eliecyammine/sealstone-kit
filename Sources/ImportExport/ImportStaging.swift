@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 public import VaultCore
 
 /// Import proceeds through a staging area and is never applied piecemeal.

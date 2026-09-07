@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 public import VaultCore
 
 /// Parses `otpauth://` URIs, the near-universal interchange form for a single

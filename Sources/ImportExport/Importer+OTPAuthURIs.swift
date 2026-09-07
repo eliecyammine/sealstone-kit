@@ -1,5 +1,5 @@
-public import Foundation
-public import VaultCore
+import Foundation
+import VaultCore
 
 /// A plain list of otpauth URIs, one per line.
 ///

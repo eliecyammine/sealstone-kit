@@ -1,6 +1,6 @@
 public import Foundation
 public import VaultCore
-public import VaultCrypto
+import VaultCrypto
 
 /// Reads and writes the vault on disk.
 ///

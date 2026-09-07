@@ -1,5 +1,5 @@
 public import Foundation
-public import VaultCore
+import VaultCore
 
 /// Reads the export formats other authenticators produce.
 ///
@@ -33,6 +33,23 @@ public enum Importer {
     public enum Failure: Error, Sendable, Equatable {
         case unrecognisedFormat
         case malformed(String)
+        /// Recognised, and not something this can open.
+        case unreadable(Unreadable)
+    }
+
+    /// A file we can name without being able to read it.
+    ///
+    /// A value, not a sentence. This package has no writing rules and the
+    /// application's do not reach across into it, so an English sentence
+    /// written here would escape both: no check for an em-dash, none for the
+    /// vocabulary the product does not use. The application says the words,
+    /// under the rules that govern words. This says which case it is.
+    public enum Unreadable: Sendable, Hashable {
+        /// A zip, whatever produced it. Raivo exports one, and so does anybody
+        /// who zipped a folder before mailing it to themselves.
+        case archive
+        /// An export the other application encrypted on the way out.
+        case encrypted(Format)
     }
 
     /// Guesses the format from the content.
@@ -82,29 +99,22 @@ public enum Importer {
     /// "unrecognised format" tells them their file is wrong when it is fine and
     /// simply not yet openable here. Aegis already said the useful thing; this
     /// says it for the rest.
-    public static func unreadable(_ data: Data) -> String? {
-        // A ZIP, whatever produced it. Raivo exports one, and so does anybody
-        // who zipped a folder before sending it to themselves.
-        if data.starts(with: [0x50, 0x4B, 0x03, 0x04]) {
-            return "This is a zip archive. Unzip it and import the file inside."
-        }
+    public static func unreadable(_ data: Data) -> Unreadable? {
+        // The local file header every zip starts with.
+        if data.starts(with: [0x50, 0x4B, 0x03, 0x04]) { return .archive }
 
         guard let text = String(data: data, encoding: .utf8),
               let object = try? JSONSerialization.jsonObject(with: Data(text.utf8)),
               let root = object as? [String: Any]
         else { return nil }
 
-        // Ente writes the ciphertext under one key and the parameters to
-        // derive its key under another. Neither is anything we can open.
+        // Ente writes the ciphertext under one key and the parameters for
+        // deriving its key under another. Neither is anything we can open.
         if root["encryptedData"] != nil || root["kdfParams"] != nil {
-            return "This Ente Auth export is encrypted. Export it again without "
-                + "a password, or decrypt it first."
+            return .encrypted(.enteAuth)
         }
 
-        if root["servicesEncrypted"] != nil {
-            return "This 2FAS backup is encrypted. Export it again without a "
-                + "password, or decrypt it first."
-        }
+        if root["servicesEncrypted"] != nil { return .encrypted(.twoFAS) }
 
         return nil
     }
@@ -116,7 +126,7 @@ public enum Importer {
         // decrypt in Aegis, and preempting that with something more general
         // would be a worse answer arriving sooner.
         if format == nil, let reason = unreadable(data) {
-            throw Failure.malformed(reason)
+            throw Failure.unreadable(reason)
         }
 
         guard let resolved = format ?? detect(data) else {

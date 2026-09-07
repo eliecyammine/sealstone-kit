@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// Moving a Codable type through `JSONValue` and back.
 ///

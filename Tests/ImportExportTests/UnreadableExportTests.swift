@@ -7,37 +7,26 @@ import Foundation
 /// Every app on the import list offers an encrypted or archived export beside
 /// its plain one, and those are the ones somebody reaches for first because
 /// they are the ones the other app recommends. Being told "unrecognised
-/// format" says their file is wrong when it is fine, so each of these says what
-/// the file is and what to do with it instead.
+/// format" says their file is wrong when it is fine, so each of these is
+/// reported as the case it is and the application says what to do about it.
 struct UnreadableExportTests {
-    private func stage(_ text: String) -> String? {
-        do {
-            _ = try Importer.stage(Data(text.utf8))
-            return nil
-        } catch let failure as Importer.Failure {
-            if case .malformed(let reason) = failure { return reason }
-            return nil
-        } catch {
-            return nil
+    @Test func aZipIsAnArchive() {
+        // The local file header every zip starts with, whatever wrote it.
+        let zip = Data([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00])
+        #expect(Importer.unreadable(zip) == .archive)
+        #expect(throws: Importer.Failure.unreadable(.archive)) {
+            try Importer.stage(zip)
         }
     }
 
-    @Test func aZipArchiveSaysToUnzipIt() {
-        // The local file header every zip starts with, whatever wrote it.
-        let zip = Data([0x50, 0x4B, 0x03, 0x04, 0x14, 0x00])
-        #expect(throws: Importer.Failure.self) { try Importer.stage(zip) }
-        #expect(Importer.unreadable(zip)?.contains("Unzip") == true)
+    @Test func anEncryptedEnteExportNamesEnte() {
+        let data = Data(#"{"version":1,"kdfParams":{"memLimit":64},"encryptedData":"AAAA"}"#.utf8)
+        #expect(Importer.unreadable(data) == .encrypted(.enteAuth))
     }
 
-    @Test func anEncryptedEnteExportSaysSo() {
-        let reason = stage(#"{"version":1,"kdfParams":{"memLimit":64},"encryptedData":"AAAA"}"#)
-        #expect(reason?.contains("Ente Auth") == true)
-        #expect(reason?.contains("encrypted") == true)
-    }
-
-    @Test func anEncryptedTwoFASBackupSaysSo() {
-        let reason = stage(#"{"servicesEncrypted":"AAAA","schemaVersion":4}"#)
-        #expect(reason?.contains("2FAS") == true)
+    @Test func anEncryptedTwoFASBackupNamesTwoFAS() {
+        let data = Data(#"{"servicesEncrypted":"AAAA","schemaVersion":4}"#.utf8)
+        #expect(Importer.unreadable(data) == .encrypted(.twoFAS))
     }
 
     /// Naming a format skips the check, because that parser has a better

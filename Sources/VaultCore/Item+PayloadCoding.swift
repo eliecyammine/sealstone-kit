@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// Reading and writing the eight shapes an item's payload can take.
 ///

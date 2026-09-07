@@ -1,5 +1,5 @@
-public import Foundation
-public import VaultCore
+import Foundation
+import VaultCore
 
 /// Anything else shaped like JSON.
 ///

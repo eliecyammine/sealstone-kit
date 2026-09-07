@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 public import VaultCore
 
 /// Writes credentials out in a form other apps read.

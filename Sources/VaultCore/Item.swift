@@ -1,4 +1,4 @@
-public import Foundation
+import Foundation
 
 /// A credential belonging to an account.
 ///
