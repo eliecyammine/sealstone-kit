@@ -176,3 +176,73 @@ struct HandoverSealingTests {
         }
     }
 }
+
+/// Reissuing a set, which is the only way to remove a keeper.
+extension HandoverSealingTests {
+    private func reissued(_ first: HandoverSealing.Sealed,
+                          to people: [HandoverSealing.Recipient]) throws
+        -> HandoverSealing.Sealed {
+        try HandoverSealing.reissue(first.handover,
+                                    itemIds: ["itm_bank", "itm_mail"],
+                                    from: vault(), to: people,
+                                    threshold: 2, at: at)
+    }
+
+    /// The arrangement keeps its name. What was replaced is the split, not the
+    /// thing it opens, so somebody's records show one handover reissued rather
+    /// than two handovers.
+    @Test func aReissueKeepsTheBundleIdentifierAndChangesTheSet() throws {
+        let first = try sealed()
+        let second = try reissued(first, to: Array(recipients.dropLast()))
+
+        #expect(second.handover.bundleId == first.handover.bundleId)
+        #expect(second.handover.setId != first.handover.setId)
+    }
+
+    /// **The old fragments stop working.** That is what reissuing is for.
+    @Test func theOldFragmentsDoNotOpenTheNewBundle() throws {
+        let first = try sealed()
+        let second = try reissued(first, to: Array(recipients.dropLast()))
+
+        #expect(throws: (any Error).self) {
+            try HandoverSealing.open(bundle: second.bundle,
+                                     with: Array(first.fragments.prefix(2)))
+        }
+    }
+
+    /// **And it does not reach backwards.** A keeper who kept the old sheet and
+    /// the old file can still open what they were given then. This test exists
+    /// to stop anybody quietly making it look otherwise: the honest response is
+    /// to say so and to recommend changing the credentials themselves.
+    @Test func theOldFragmentsStillOpenTheOldBundle() throws {
+        let first = try sealed()
+        _ = try reissued(first, to: Array(recipients.dropLast()))
+
+        let stillOpens = try HandoverSealing.open(
+            bundle: first.bundle, with: Array(first.fragments.prefix(2)))
+        #expect(stillOpens.items.count == 2)
+    }
+
+    /// A removed keeper gets no fragment in the new set.
+    @Test func aRemovedKeeperIsNotInTheNewSet() throws {
+        let first = try sealed()
+        let second = try reissued(first, to: Array(recipients.dropLast()))
+
+        #expect(second.fragments.count == 2)
+        #expect(second.keepers.map(\.displayName) == ["Sister", "Solicitor"])
+    }
+
+    /// The note carries over unless it is changed, because it is usually still
+    /// the right thing to say.
+    @Test func theNoteCarriesOverUnlessItIsReplaced() throws {
+        let first = try sealed()
+        let same = try reissued(first, to: Array(recipients.dropLast()))
+        #expect(same.handover.note == first.handover.note)
+
+        let changed = try HandoverSealing.reissue(
+            first.handover, itemIds: ["itm_bank"], from: vault(),
+            to: Array(recipients.dropLast()), threshold: 2,
+            note: "Camille has stepped back.", at: at)
+        #expect(changed.handover.note == "Camille has stepped back.")
+    }
+}

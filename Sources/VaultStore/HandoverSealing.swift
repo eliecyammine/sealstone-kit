@@ -55,6 +55,7 @@ public enum HandoverSealing {
                             to recipients: [Recipient],
                             threshold: Int,
                             note: String? = nil,
+                            keeping bundleId: String? = nil,
                             at date: Date = Date()) throws -> Sealed {
         guard !itemIds.isEmpty else { throw Failure.nothingChosen }
 
@@ -66,7 +67,8 @@ public enum HandoverSealing {
         // A fresh key for this bundle and nothing else.
         let key = randomBytes(32)
         let setId = randomBytes(Fragment.setIdLength)
-        let bundleId = SealstoneID.make(.bundle, at: date)
+        // Carried over on a reissue, fresh otherwise.
+        let bundleId = bundleId ?? SealstoneID.make(.bundle, at: date)
 
         let handover = Handover(
             bundleId: bundleId,
@@ -101,6 +103,31 @@ public enum HandoverSealing {
 
         return Sealed(handover: handover, bundle: sealed,
                       fragments: fragments, keepers: keepers)
+    }
+
+    /// Reissuing a set, which is the only way to remove a keeper.
+    ///
+    /// A fresh key, a fresh split, fresh fragments for everybody who is still
+    /// in. The bundle identifier does not change: what is being replaced is the
+    /// split, not the thing it opens, so somebody looking at their records sees
+    /// one arrangement that has been reissued rather than two arrangements.
+    ///
+    /// **What this cannot do, and the interface has to say so.** It stops the
+    /// old fragments working from now on. It does not reach backwards. A keeper
+    /// who kept their old sheet *and* the old sealed file, and who can find
+    /// enough other old sheets, can still open what they were given then. You
+    /// cannot un-give something. The only thing that actually takes access away
+    /// is changing the credentials themselves.
+    public static func reissue(_ previous: Handover,
+                               itemIds: Set<String>,
+                               from vault: VaultDocument,
+                               to recipients: [Recipient],
+                               threshold: Int,
+                               note: String? = nil,
+                               at date: Date = Date()) throws -> Sealed {
+        try seal(itemIds: itemIds, from: vault, to: recipients,
+                 threshold: threshold, note: note ?? previous.note,
+                 keeping: previous.bundleId, at: date)
     }
 
     /// Opening one, given enough fragments.

@@ -90,7 +90,10 @@ final class ConformanceTests: XCTestCase {
             "the corpus declares kinds nothing here reads: \(unread.joined(separator: ", ")). "
             + "Either read them or say why they are skipped.")
 
-        for kind in handled where kind != "identifiers" || declared.contains("identifiers") {
+        // And the other way round: a handler with no data is a test that
+        // passes because it ran zero times, which is how the identifiers went
+        // unchecked for as long as they did.
+        for kind in handled {
             XCTAssertFalse(families(ofKind: kind).isEmpty,
                 "no family of kind \(kind) — run Scripts/sync-vectors.sh")
         }
