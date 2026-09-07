@@ -37,6 +37,13 @@ public struct VaultDocument: Sendable, Hashable {
     public var links: [Link]
     public var keepers: [Keeper]
 
+    /// Present means this document is a handover bundle rather than a vault.
+    ///
+    /// One key, at the root, checkable before anything else in the file is
+    /// believed. A keeper who has been handed a file needs to know which of the
+    /// two things they are holding before they act on any of it.
+    public var handover: Handover?
+
     /// Top-level keys written by a newer version, carried through untouched.
     ///
     /// Opening a vault in an older build and saving it must not destroy what
@@ -53,6 +60,7 @@ public struct VaultDocument: Sendable, Hashable {
         items: [Item] = [],
         links: [Link] = [],
         keepers: [Keeper] = [],
+        handover: Handover? = nil,
         unrecognised: [String: JSONValue] = [:]
     ) {
         self.formatVersion = Self.currentFormatVersion
@@ -63,6 +71,7 @@ public struct VaultDocument: Sendable, Hashable {
         self.items = items
         self.links = links
         self.keepers = keepers
+        self.handover = handover
         self.unrecognised = unrecognised
     }
 }

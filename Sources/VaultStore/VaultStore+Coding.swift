@@ -10,19 +10,14 @@ import VaultCrypto
 
 extension VaultStore {
     nonisolated func encode(_ document: VaultDocument) throws -> [UInt8] {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.sortedKeys]
-        return [UInt8](try encoder.encode(document))
+        try VaultCoding.encode(document)
     }
 
     nonisolated func decode(_ plaintext: [UInt8]) throws -> VaultDocument {
-        try VaultStore.decodeDocument(plaintext)
+        try VaultCoding.decode(plaintext)
     }
 
     static func decodeDocument(_ plaintext: [UInt8]) throws -> VaultDocument {
-        let document = try JSONDecoder().decode(VaultDocument.self,
-                                                from: Data(plaintext))
-        try VaultValidator.validate(document)
-        return document
+        try VaultCoding.decode(plaintext)
     }
 }

@@ -17,6 +17,7 @@ extension VaultDocument: Codable {
     private enum CodingKeys: String, CodingKey, CaseIterable {
         case formatVersion, vaultId, createdAt, updatedAt
         case accounts, items, links, keepers
+        case handover
     }
 
     private static let known = Set(CodingKeys.allCases.map(\.rawValue))
@@ -37,6 +38,7 @@ extension VaultDocument: Codable {
             items: try container.decodeIfPresent([Item].self, forKey: .items) ?? [],
             links: try container.decodeIfPresent([Link].self, forKey: .links) ?? [],
             keepers: try container.decodeIfPresent([Keeper].self, forKey: .keepers) ?? [],
+            handover: try container.decodeIfPresent(Handover.self, forKey: .handover),
             unrecognised: try UnknownKeys.read(from: decoder, known: Self.known)
         )
 
@@ -57,6 +59,10 @@ extension VaultDocument: Codable {
         try container.encode(items, forKey: .items)
         try container.encode(links, forKey: .links)
         try container.encode(keepers, forKey: .keepers)
+        // Omitted when absent, because absent is what says this is a
+        // vault rather than a bundle. Writing null would make the one
+        // bit a reader checks first ambiguous.
+        try container.encodeIfPresent(handover, forKey: .handover)
     }
 }
 
@@ -171,5 +177,39 @@ extension Keeper: Codable {
         try container.encode(issuedAt, forKey: .issuedAt)
         try container.encodeIfPresent(lastConfirmedAt, forKey: .lastConfirmedAt)
         try container.encode(status, forKey: .status)
+    }
+}
+
+extension Handover: Codable {
+    private enum CodingKeys: String, CodingKey, CaseIterable {
+        case bundleId, setId, threshold, total, sealedAt, note, supersededBy
+    }
+
+    private static let known = Set(CodingKeys.allCases.map(\.rawValue))
+
+    public init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            bundleId: try container.decode(String.self, forKey: .bundleId),
+            setId: try container.decode(String.self, forKey: .setId),
+            threshold: try container.decode(Int.self, forKey: .threshold),
+            total: try container.decode(Int.self, forKey: .total),
+            sealedAt: try container.decode(Timestamp.self, forKey: .sealedAt),
+            note: try container.decodeIfPresent(String.self, forKey: .note),
+            supersededBy: try container.decodeIfPresent(String.self, forKey: .supersededBy),
+            unrecognised: try UnknownKeys.read(from: decoder, known: Self.known))
+    }
+
+    public func encode(to encoder: any Encoder) throws {
+        try UnknownKeys.write(unrecognised, known: Self.known, to: encoder)
+
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(bundleId, forKey: .bundleId)
+        try container.encode(setId, forKey: .setId)
+        try container.encode(threshold, forKey: .threshold)
+        try container.encode(total, forKey: .total)
+        try container.encode(sealedAt, forKey: .sealedAt)
+        try container.encodeIfPresent(note, forKey: .note)
+        try container.encodeIfPresent(supersededBy, forKey: .supersededBy)
     }
 }
